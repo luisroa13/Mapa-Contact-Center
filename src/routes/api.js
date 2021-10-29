@@ -3,8 +3,7 @@ const capas = require("../controllers/layerController");
 const router = require('express').Router();
 
 router.get('/Estados', capas.controllerData.getEstados);
-router.get('/direccion/:calle/:esquina', capas.controllerData.getAddress);
-router.get('/direccion/:calle', capas.controllerData.getAddressCalle);
+router.get('/:calle/:esquina/:colonia/:estado', capas.controllerData.getAddress);
 router.get('/Municipios/:clavemun', capas.controllerData.getMunicipios);
 router.get('/Colonias/:estado', capas.controllerData.getColonias);
 

@@ -44,86 +44,49 @@ controllerData.getAddress = (req, res, next) => {
 
   let calle = req.params.calle;
   let esquina = req.params.esquina;
-  
+  let colonia =req.params.colonia;
+  let idEstado=req.params.estado;
+
+ if (esquina=='NA'){esquina='%%'}
+
+ if (colonia=='NA'){colonia='%%'}
 
   // Almacenamos la consulta SQL
   let queryLayer = `select ST_AsGeoJSON(u.*) from(
     
-select v.nomvial
-as "Calle",s.nomvial as "Esquina 1",b.nomvial as "Esquina 2",n.geom as 
-"Geometria",col.nom_col as "Colonia", col.cod_post as "Codigo postal",
-mun.nombre_municipio as "Municipio", es.nombre_estado as "Estado",
-m.nombre_marca as "Marca",cam.nombre_campana as "Campaña",n.ageb
-from cruces_526 c inner join vialidades_526 v on c.calle=v.cvevial
-inner join  vialidades_526 s on c.esquina_1=s.cvevial
-inner join  vialidades_526 b on c.esquina_2=b.cvevial
-inner join "CC526" n on c.id_geom=n.id_geom
-inner join "Marca" m on m.id_marca=n.id_marca
-inner join  "Campana" cam on cam.id_campana = n.id_campana
-inner join "Colonias" col on col.id = n.id_2
-inner join "municipios" mun on mun.id_municipio= col.id_municipio
-inner join  "Estados" es on es.clave_ent = col.cve_ent
-      where v.nomvial like '%${calle}%' 
-      and (s.nomvial like'%${esquina}%' or b.nomvial like'%${esquina}%')  ) u  
+    select v.nomvial
+    as "Calle",s.nomvial as "Esquina 1",b.nomvial as "Esquina 2",n.geom as 
+    "Geometria",col.nom_col as "Colonia", col.cod_post as "Codigo postal",
+    mun.nombre_municipio as "Municipio", es.nombre_estado as "Estado",
+    m.nombre_marca as "Marca",cam.nombre_campana as "Campaña",n.ageb
+    from cruces_526 c inner join vialidades_526 v on c.calle=v.cvevial
+    inner join  vialidades_526 s on c.esquina_1=s.cvevial
+    inner join  vialidades_526 b on c.esquina_2=b.cvevial
+    inner join "CC526" n on c.id_geom=n.id_geom
+    inner join "Marca" m on m.id_marca=n.id_marca
+    inner join  "Campana" cam on cam.id_campana = n.id_campana
+    inner join "Colonias" col on col.id = n.id_2
+    inner join "municipios" mun on mun.id_municipio= col.id_municipio
+    inner join  "Estados" es on es.clave_ent = col.cve_ent
+       where v.nomvial like '%${calle}%' and es.clave_ent = '${idEstado}' 
+      and col.nom_col like '%${colonia}%'
+      and (s.nomvial like'%${esquina}%' or b.nomvial like'%${esquina}%') ) u  
     `
   let query = pool.query(queryLayer, (err, resp) => {
     if (err) {
       return console.error('Error ejecutando la consulta. ', err.stack)
+     
     }
 
     let array = new Array();
-
     let i;
     for (i = 0; i < resp.rows.length; i++) {
       array.push((resp.rows[i].st_asgeojson));
       // console.log(i);  
     }
-    const geojson = resp.rows;
-    //  console.log(geojson);
-    res.json(array);
-
-  })
-}
-controllerData.getAddressCalle = (req, res, next) => {
-
-  let calle = req.params.calle;
-
-
-  // Almacenamos la consulta SQL
-  let queryLayer = `select ST_AsGeoJSON(u.*) from (
     
-select v.nomvial
-as "Calle",s.nomvial as "Esquina 1",b.nomvial as "Esquina 2",n.geom as 
-"Geometria",col.nom_col as "Colonia", col.cod_post as "Codigo postal",
-mun.nombre_municipio as "Municipio", es.nombre_estado as "Estado",
-m.nombre_marca as "Marca",cam.nombre_campana as "Campaña",n.ageb
-from cruces_526 c inner join vialidades_526 v on c.calle=v.cvevial
-inner join  vialidades_526 s on c.esquina_1=s.cvevial
-inner join  vialidades_526 b on c.esquina_2=b.cvevial
-inner join "CC526" n on c.id_geom=n.id_geom
-inner join "Marca" m on m.id_marca=n.id_marca
-inner join  "Campana" cam on cam.id_campana = n.id_campana
-inner join "Colonias" col on col.id = n.id_2
-inner join "municipios" mun on mun.id_municipio= col.id_municipio
-inner join  "Estados" es on es.clave_ent = col.cve_ent
-    where v.nomvial like '%${calle}%' 
-      and (s.nomvial like'%%' or b.nomvial like'%%')  ) u  
-    `
-
-
-  let query = pool.query(queryLayer, (err, resp) => {
-    if (err) {
-      return console.error('Error ejecutando la consulta. ', err.stack)
-    }
-
-    let array = new Array();
-
-    let i;
-    for (i = 0; i < resp.rows.length; i++) {
-      array.push((resp.rows[i].st_asgeojson));
-        
-    }
    
+    //  console.log(geojson);
     res.json(array);
 
   })
