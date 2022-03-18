@@ -37,18 +37,28 @@ body {
 .contenedor .resultados{
 	background: #fff;
 	padding: 20px;
-	border-radius: 4px;
+	border-radius: 10px;
 }
 
 .contenedor .header {
-	background-color: #12203E;
+	background-color: #142F43;
 	color: #fff;
 	grid-area: header;
 	display: inline-block;
 }
 .contenedor .header > input[type=text]{
 	max-width: 300px;
-	width: 33%;
+	width: 100%;
+	border: none;
+	border-radius: 3px;
+	padding: 10px;
+}
+.contenedor .header > input[type=button]{
+	background-color: #FFAB4C;
+	color: #142F43;
+	border: none;
+	border-radius: 3px;
+	padding: 10px;
 }
 .contenedor .contenido {
 	grid-area: contenido;
@@ -63,7 +73,23 @@ body {
 	align-items: center;
 	justify-content: center;
 	min-height: 100px;
+	background-color:  #142F43;
 	grid-area: sidebar;
+}
+.contenedor .sidebar > h3{
+	color: #fff;
+}
+.contenedor .sidebar > input[type=button]{
+	background-color: #d7d7d8;
+	border: none;
+	border-radius: 4px;
+	padding: 8px;
+}
+.contenedor .sidebar > select{
+	background-color: #d7d7d8;
+	border: none;
+	border-radius: 4px;
+	padding: 8px;
 }
 .contenedor .resultados {
 	display: grid;
@@ -183,6 +209,13 @@ margin: auto;
 		padding: 6px;
 		justify-self: center;
 		}
+
+
+	input[type=button]:active{
+			transform: scale(.9);
+			}
+			
+			
 .modalContainer .close {
 	color: #aaaaaa;
 	float: right;

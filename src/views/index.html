@@ -10,79 +10,33 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
         crossorigin="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
         integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
         crossorigin=""></script>
-        <link
-        rel="stylesheet"
-        href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css"
-      />
-      <script type="module" src="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.umd.js" ></script>
-      
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css" />
+    <script type="module" src="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.umd.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js">
+    </script>
     <title>Mapa Contact Center</title>
 </head>
 
 <body>
-    <div class="contenedor">
-        <div id="tvesModal" class="modalContainer">
-            <span class="close">×</span>
-            <div class="modal-content">
-                <h3>Selecciona un estado</h3>
-                <select name="Estados" id="EstadosbAb">
-                    <option value="15">Estado de México</option>
-                    <option value="09">Ciudad de México</option>
-                    <option value="14">Jalisco</option>
-                    <option value="19">Nuevo León</option>
-                    <option value="01">Aguascalientes</option>
-                    <option value="02">Baja California</option>
-                    <option value="03">Baja California Sur</option>
-                    <option value="04">Campeche</option>
-                    <option value="05">Coahuila de Zaragoza</option>
-                    <option value="06">Colima</option>
-                    <option value="07">Chiapas</option>
-                    <option value="08">Chihuahua</option>
-    
-                    <option value="10">Durango</option>
-                    <option value="11">Guanajuato</option>
-                    <option value="12">Guerrero</option>
-                    <option value="13">Hidalgo</option>
-    
-    
-                    <option value="16">Michoacán de Ocampo</option>
-                    <option value="17">Morelos</option>
-                    <option value="18">Nayarit</option>
-    
-                    <option value="20">Oaxaca</option>
-                    <option value="21">Puebla</option>
-                    <option value="22">Querétaro</option>
-                    <option value="23">Quintana Roo</option>
-                    <option value="24">San Luis Potosí</option>
-                    <option value="25">Sinaloa</option>
-                    <option value="26">Sonora</option>
-                    <option value="27">Tabasco</option>
-                    <option value="28">Tamaulipas</option>
-                    <option value="29">Tlaxcala</option>
-                    <option value="30">Veracruz de Ignacio de la Llave</option>
-                    <option value="31">Yucatan</option>
-                    <option value="32">Zacatecas</option>
-                </select>
-                <input type="text" id="txtSearchCalle" placeholder="Calle">
-                <input type="text" id="txtSearchEsquina" placeholder="Esquina">
-                <input type="text" id="txtColonia" placeholder="Colonia">
-                <input type="text" id="txtMunicipio" placeholder="Municipio">
-                 <input type="button" id="txtBntSearch" value="Buscar">  
-                              
-            </div>
-        </div>
+    <div class="contenedor" id="contenedor">
+
         <header class="header">
             <input type="text" id="query" placeholder="Busar">
-            <input type="button" id="btnSearch"  value="Buscar">
+            <input type="button" id="btnSearch" value="Buscar">
             <input type="button" id="btnBusquedaAvanzada" value="Busqueda Avanzada">
-           
+            <input type="button" id="btnFiltro" value="Buscar en las capas">
+            <input type="button" id="btnKFC" value="KFC" >
+            <input type="button" id="btnPh" value="PH">
         </header>
         <aside class="sidebar" id="sidebar">
             <h3>Capas</h3>
-            
+
             <input type="button" id="bntSearchEs" value="Estados">
             <select name="Estados" id="Estados">
                 <option value="15">Estado de México</option>
@@ -124,22 +78,133 @@
             </select>
             <input type="button" id="bntSearchMun" value="Municipios">
             <input type="button" id="btnColonias" value="Colonias">
+            <input type="button" id="btnCp" value="Codigos postales">
+           
         </aside>
         <main class="contenido">
             <div id="map" class="map"></div>
 
         </main>
-    <aside  class="resultados">
-        <h3>Resultados de busqueda</h3>
-        <div id="res" class="resultadosContainer">
+        <aside class="resultados" id="resultados">
+            <h3>Resultados de busqueda</h3>
+            <div id="res" class="resultadosContainer">
+            </div>
+            
+        </aside>
+        <div id="tvesModal" class="modalContainer">
+            <span class="close">×</span>
+            <div class="modal-content">
+                <h3>Selecciona un estado</h3>
+                <select name="Estados" id="EstadosbAb">
+                    <option value="15">Estado de México</option>
+                    <option value="09">Ciudad de México</option>
+                    <option value="14">Jalisco</option>
+                    <option value="19">Nuevo León</option>
+                    <option value="01">Aguascalientes</option>
+                    <option value="02">Baja California</option>
+                    <option value="03">Baja California Sur</option>
+                    <option value="04">Campeche</option>
+                    <option value="05">Coahuila de Zaragoza</option>
+                    <option value="06">Colima</option>
+                    <option value="07">Chiapas</option>
+                    <option value="08">Chihuahua</option>
+
+                    <option value="10">Durango</option>
+                    <option value="11">Guanajuato</option>
+                    <option value="12">Guerrero</option>
+                    <option value="13">Hidalgo</option>
 
 
+                    <option value="16">Michoacán de Ocampo</option>
+                    <option value="17">Morelos</option>
+                    <option value="18">Nayarit</option>
+
+                    <option value="20">Oaxaca</option>
+                    <option value="21">Puebla</option>
+                    <option value="22">Querétaro</option>
+                    <option value="23">Quintana Roo</option>
+                    <option value="24">San Luis Potosí</option>
+                    <option value="25">Sinaloa</option>
+                    <option value="26">Sonora</option>
+                    <option value="27">Tabasco</option>
+                    <option value="28">Tamaulipas</option>
+                    <option value="29">Tlaxcala</option>
+                    <option value="30">Veracruz de Ignacio de la Llave</option>
+                    <option value="31">Yucatan</option>
+                    <option value="32">Zacatecas</option>
+                </select>
+                <input type="text" id="txtSearchCalle" placeholder="Calle">
+                <input type="text" id="txtSearchEsquina" placeholder="Esquina">
+                <input type="text" id="txtColonia" placeholder="Colonia">
+                <input type="text" id="txtMunicipio" placeholder="Municipio">
+                <input type="button" id="txtBntSearch" value="Buscar">
+
+            </div>
         </div>
-    </aside>
-      
-       
+
+        <div id="tvesModal2" class="modalContainer">
+            <span class="close">×</span>
+            <div class="modal-content">
+                <h3>Selecciona un estado</h3>
+                <br>
+                <select name="Estados" id="estadosFiltro">
+                    <option value="15">Estado de México</option>
+                    <option value="09">Ciudad de México</option>
+                    <option value="14">Jalisco</option>
+                    <option value="19">Nuevo León</option>
+                    <option value="01">Aguascalientes</option>
+                    <option value="02">Baja California</option>
+                    <option value="03">Baja California Sur</option>
+                    <option value="04">Campeche</option>
+                    <option value="05">Coahuila de Zaragoza</option>
+                    <option value="06">Colima</option>
+                    <option value="07">Chiapas</option>
+                    <option value="08">Chihuahua</option>
+
+                    <option value="10">Durango</option>
+                    <option value="11">Guanajuato</option>
+                    <option value="12">Guerrero</option>
+                    <option value="13">Hidalgo</option>
+
+
+                    <option value="16">Michoacán de Ocampo</option>
+                    <option value="17">Morelos</option>
+                    <option value="18">Nayarit</option>
+
+                    <option value="20">Oaxaca</option>
+                    <option value="21">Puebla</option>
+                    <option value="22">Querétaro</option>
+                    <option value="23">Quintana Roo</option>
+                    <option value="24">San Luis Potosí</option>
+                    <option value="25">Sinaloa</option>
+                    <option value="26">Sonora</option>
+                    <option value="27">Tabasco</option>
+                    <option value="28">Tamaulipas</option>
+                    <option value="29">Tlaxcala</option>
+                    <option value="30">Veracruz de Ignacio de la Llave</option>
+                    <option value="31">Yucatan</option>
+                    <option value="32">Zacatecas</option>
+                </select>
+                <br>
+                <h3>Selecciona una capa</h3>
+                <br>
+                <select id="Capa">
+                    <option value="Municipio">Municipios</option>
+                    <option value="Colonia">Colonias</option>
+                    <option value="CodigoPostal">Codigo Postales</option>
+                </select>
+
+                </select>
+                <input type="text" id="txtFiltro" placeholder="Buscar">
+                <input type="text" id="txtCpFiltro" placeholder="Codigo Postal">
+                <input type="button" id="txtBntSearchFiltro" value="Filtrar">
+
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/leaflet.path.drag@0.0.6/src/Path.Drag.min.js"></script>
         <script src="../public/scripts/mapa.js"></script>
-        
+    </div>
 </body>
 
 </html>

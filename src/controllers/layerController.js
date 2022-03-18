@@ -16,6 +16,8 @@ const pool = new Pool({
 
 const controllerData = ({})
 
+
+
 controllerData.getEstados = (req, res, next) => {
   // Almacenamos la consulta SQL
   let queryLayer = `select ST_AsGeoJSON(e.*) from  "Estados" e`
@@ -96,17 +98,17 @@ controllerData.getAddress = (req, res, next) => {
 controllerData.getMunicipios = (req, res, next) => {
   // Almacenamos la consulta SQL
 
-  let idMunicipio = req.params.clavemun;
+  let idEstado = req.params.claveEstado;
 
 
   let queryLayer = `select ST_AsGeoJSON(b.*) from (select m.nombre_municipio as "Municipio", 
   m.cve_mun as "Clave Municipio",m.cve_ent as "Clave Estado", 
   e.nombre_estado as "Estado", m.geometria
   from municipios m 
-  inner join "Estados" e on m.cve_ent=e.clave_ent where m.cve_ent='${idMunicipio}') b`
+  inner join "Estados" e on m.cve_ent=e.clave_ent where m.cve_ent='${idEstado}') b`
 
 
-  let query = pool.query(queryLayer, (err, resp) => {
+    let query =  pool.query( queryLayer, async (err, resp) => {
     if (err) {
       return console.error('Error ejecutando la consulta. ', err.stack)
     }
@@ -120,7 +122,7 @@ controllerData.getMunicipios = (req, res, next) => {
     }
     //console.log(array);
 
-    res.json(array)
+    await res.json(array)
 
   })
 }
@@ -132,14 +134,14 @@ controllerData.getColonias =  (req, res, next) => {
   let estado = req.params.estado
 
 
-  let queryLayer = `select  ST_AsGeoJSON(b.*) from (select c.geom, c.nom_col, m.nombre_municipio,
-    c.cod_post,e.nombre_estado,c.cve_ent from "Colonias" c
+  let queryLayer = `select  ST_AsGeoJSON(b.*) from (select c.geom "Geometria", c.nom_col as "Colonia", m.nombre_municipio as "Municipio",
+    c.cod_post as "Codigo Postal",e.nombre_estado as "Estado",c.cve_ent from "colonias2020" c
     inner join "Estados" e on c.cve_ent=e.clave_ent
 	inner join municipios m on c.id_municipio=m.id_municipio where c.cve_ent='${estado}'
 	)b`
 
 
-   let query = pool.query(queryLayer, async (err, resp) => {
+   let query = pool.query(queryLayer,  (err, resp) => {
      if (err) {
         return console.error('Error ejecutando la consulta. ', err.stack);
      }
@@ -151,10 +153,224 @@ controllerData.getColonias =  (req, res, next) => {
        array.push((resp.rows[i].st_asgeojson));
         
      }
+      res.json(array);
+
+   })
+
+}
+
+//obteniendo codigos postales
+controllerData.getCodigosPostales =  (req, res, next) => {
+
+
+  let estado = req.params.estado
+
+
+  let queryLayer = `select  ST_AsGeoJSON(b.*) 
+  from ( select cp.codigo_postal, cp.geom, mun.nombre_municipio as "Municipio", estados.nombre_estado as "Estado "from "Codigos_postales" cp 
+  inner join "municipios" mun on cp.id_municipio=mun.id_municipio
+  inner join "Estados" estados on mun.cve_ent=estados.clave_ent
+  
+  where cp.cve_ent='${estado}'
+  ) b`
+
+
+   let query = pool.query(queryLayer, async (err, resp) => {
+     if (err) {
+        return console.error('Error ejecutando la consulta. ', err.stack);
+     }
+
+     let array = new Array();
+    
+     let i;
+     for (i = 0; i < resp.rows.length; i++) {
+    
+       array.push((resp.rows[i].st_asgeojson));
+        
+     }
       await res.json(array);
 
    })
 
 }
+
+//Filtro de Municipio
+controllerData.getFiltroMunicipio =  (req, res, next) => {
+
+
+  const idEstado = req.params.estado;
+  const valor=req.params.valor;
+console.log(idEstado+" "+valor)
+  let queryLayer = `select ST_AsGeoJSON(b.*) from (select m.nombre_municipio as "Municipio", 
+  m.cve_mun as "Clave Municipio",m.cve_ent as "Clave Estado", 
+  e.nombre_estado as "Estado", m.geometria,ST_CENTROID(m.geometria) as "Centroide"
+  from municipios m 
+  inner join "Estados" e on m.cve_ent=e.clave_ent where m.cve_ent='${idEstado}' 
+  and m.nombre_municipio like '%${valor}%' ) b`
+
+
+
+   let query = pool.query(queryLayer, async (err, resp) => {
+     if (err) {
+        return console.error('Error ejecutando la consulta. ', err.stack);
+     }
+
+     let array = new Array();
+    
+     let i;
+     for (i = 0; i < resp.rows.length; i++) {
+    
+       array.push((resp.rows[i].st_asgeojson));
+        
+     }
+      await res.json(array);
+
+   })
+
+}
+
+//Filtro de Colonia
+controllerData.getFiltroColonia =  (req, res, next) => {
+
+
+  const idEstado = req.params.estado;
+  const valor=req.params.valor;
+
+let queryLayer = `select  ST_AsGeoJSON(b.*) from (select c.geom "Geometria", c.nom_col as "Colonia", m.nombre_municipio as "Municipio",
+c.cod_post as "Codigo Postal",e.nombre_estado as "Estado",c.cve_ent, ST_CENTROID(C.geom) as "Centroide" from "colonias2020" c
+inner join "Estados" e on c.cve_ent=e.clave_ent
+inner join municipios m on c.id_municipio=m.id_municipio where c.cve_ent='${idEstado}'
+and (c.nom_col like '%${valor}%')
+)b`
+
+
+
+   let query = pool.query(queryLayer, async (err, resp) => {
+     if (err) {
+        return console.error('Error ejecutando la consulta. ', err.stack);
+     }
+
+     let array = new Array();
+    
+     let i;
+     for (i = 0; i < resp.rows.length; i++) {
+    
+       array.push((resp.rows[i].st_asgeojson));
+        
+     }
+      await res.json(array);
+
+   })
+
+}
+
+
+//Filtro de Codigo Postal
+controllerData.getFiltroCodigoPostal =  (req, res, next) => {
+
+
+  const idEstado = req.params.estado;
+  const valor=req.params.valor;
+
+console.log(idEstado+" "+valor)
+let queryLayer = `select  ST_AsGeoJSON(b.*) 
+  from ( select cp.codigo_postal, cp.geom, mun.nombre_municipio as "Municipio", estados.nombre_estado as "Estado", 
+  ST_CENTROID(cp.geom) as "Centroide"
+  from "Codigos_postales" cp 
+  inner join "municipios" mun on cp.id_municipio=mun.id_municipio
+  inner join "Estados" estados on mun.cve_ent=estados.clave_ent
+  
+  where cp.cve_ent='${idEstado}' and cp.codigo_postal ='${valor}'
+  ) b`
+
+
+
+
+   let query = pool.query(queryLayer, async (err, resp) => {
+     if (err) {
+        return console.error('Error ejecutando la consulta. ', err.stack);
+     }
+
+     let array = new Array();
+    
+     let i;
+     for (i = 0; i < resp.rows.length; i++) {
+    
+       array.push((resp.rows[i].st_asgeojson));
+        
+     }
+      await res.json(array);
+
+   })
+
+}
+
+
+controllerData.getSites =  (req, res, next) => {
+
+const marca=req.params.marca
+let queryLayer = `select  ST_AsGeoJSON(b.*) 
+from ( select site.geom, site."CC", site."Nombre",campana.nombre_campana as "Campaña",
+  marca.nombre_marca as "Marca", site."Estado", 
+  site."Estado",site."Municipo",site."Colonia",site."DIRECCION",
+  site."Calle 1", site."Calle 2",site."Ageb",site."NUM EXT",site."TELEFONO"
+  FROM "SITES" site
+  INNER join "Campana" campana on site."Campana"=campana.id_campana
+  INNER JOIN "Marca" marca on site."Marca"=marca.id_marca
+  where marca.nombre_marca like '${marca}'
+) b`
+
+
+
+
+   let query = pool.query(queryLayer, async (err, resp) => {
+     if (err) {
+        return console.error('Error ejecutando la consulta. ', err.stack);
+     }
+
+     let array = new Array();
+    
+     let i;
+     for (i = 0; i < resp.rows.length; i++) {
+    
+       array.push((resp.rows[i].st_asgeojson));
+        
+     }
+      await res.json(array);
+
+   })
+
+}
+controllerData.getTz =  (req, res, next) => {
+
+  const marca= req.params.marca
+  const queryLayer = `select  ST_AsGeoJSON(b.*) 
+  from ( 
+    select tz.geom, tz."Name" as "CC", marca.nombre_marca as "Marca" FROM "TZ" tz
+    inner join "Marca" marca on tz."Marca"= marca.id_marca
+  where marca.nombre_marca='${marca}'
+  ) b`
+  
+  
+  
+  
+     let query = pool.query(queryLayer, async (err, resp) => {
+       if (err) {
+          return console.error('Error ejecutando la consulta. ', err.stack);
+       }
+  
+       let array = new Array();
+      
+       let i;
+       for (i = 0; i < resp.rows.length; i++) {
+      
+         array.push((resp.rows[i].st_asgeojson));
+          
+       }
+        await res.json(array);
+  
+     })
+  
+  }
 
 module.exports = { controllerData }
