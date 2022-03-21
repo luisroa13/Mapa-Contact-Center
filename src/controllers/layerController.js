@@ -200,7 +200,6 @@ controllerData.getFiltroMunicipio =  (req, res, next) => {
 
   const idEstado = req.params.estado;
   const valor=req.params.valor;
-console.log(idEstado+" "+valor)
   let queryLayer = `select ST_AsGeoJSON(b.*) from (select m.nombre_municipio as "Municipio", 
   m.cve_mun as "Clave Municipio",m.cve_ent as "Clave Estado", 
   e.nombre_estado as "Estado", m.geometria,ST_CENTROID(m.geometria) as "Centroide"
@@ -240,8 +239,8 @@ let queryLayer = `select  ST_AsGeoJSON(b.*) from (select c.geom "Geometria", c.n
 c.cod_post as "Codigo Postal",e.nombre_estado as "Estado",c.cve_ent, ST_CENTROID(C.geom) as "Centroide" from "colonias2020" c
 inner join "Estados" e on c.cve_ent=e.clave_ent
 inner join municipios m on c.id_municipio=m.id_municipio where c.cve_ent='${idEstado}'
-and (c.nom_col like '%${valor}%')
-)b`
+and (c.nom_col like '%${valor}%' or  c.cod_post like '%${valor}%')
+)b` 
 
 
 
@@ -272,7 +271,7 @@ controllerData.getFiltroCodigoPostal =  (req, res, next) => {
   const idEstado = req.params.estado;
   const valor=req.params.valor;
 
-console.log(idEstado+" "+valor)
+
 let queryLayer = `select  ST_AsGeoJSON(b.*) 
   from ( select cp.codigo_postal, cp.geom, mun.nombre_municipio as "Municipio", estados.nombre_estado as "Estado", 
   ST_CENTROID(cp.geom) as "Centroide"

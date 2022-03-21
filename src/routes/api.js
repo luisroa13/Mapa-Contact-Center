@@ -24,7 +24,10 @@ router.get('/', (req, res) => {
     res.redirect('../views/index.html');
     
 });
-
+router.get('/views/login', (req, res) => {
+    res.redirect('../views/login.html');
+    
+});
 
 
 module.exports = router;

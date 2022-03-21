@@ -18,7 +18,7 @@ body {
 
 .contenedor {
 	width:98%;
-	
+	height: auto;
 	margin: 20px auto;
 	display: grid;
 	grid-gap: 20px;
@@ -45,6 +45,7 @@ body {
 	color: #fff;
 	grid-area: header;
 	display: inline-block;
+	align-items: center;
 }
 .contenedor .header > input[type=text]{
 	max-width: 300px;
@@ -200,7 +201,7 @@ margin: auto;
 		max-width: 300px;
 		padding: 6px;
 		justify-self: center;
-
+		
 	}
 	.modalContainer .modal-content > input[type=button]{
 		border-radius: 5px;
