@@ -54,8 +54,8 @@ let layerEstado = [];
 let colonia = [];
 let layerColonia = [];
 let popupColonia = [];
-const btnKFC = document.getElementById('btnKFC');
-const btnPh = document.getElementById('btnPh')
+let btnKFC = document.getElementById('btnKFC');
+let btnPH = document.getElementById('btnPH')
 let groupColonias
 let groupTZ
 let coordinates = document.getElementById("query").value;
@@ -67,7 +67,7 @@ let municipioFiltro = [];
 let coloniaFiltro = [];
 let codigoFiltro = [];
 let layerFiltro = [];
-
+let divChild = []
 let siteLayer = []
 let site = []
 let tz = []
@@ -110,10 +110,10 @@ async function addEstado(data) {
 
 
 // Funcion que agrega un marcardor con los datos obtenidos por la api
-async function addDir(data) {
+async function addDireccion(data) {
 
     if (d.length > 0) {
-        removeStreet2(d.length)
+        removeCalle2(d.length)
     }
 
     //por cada resultado que arroja la api se va agregando un marcador
@@ -187,7 +187,7 @@ async function addMunicipio(data) {
 
 //FUNCION QUE AGREFA UNA CALLE VECTORIZADA AL MAPA
 
-function removeStreet(length) {
+function removeCalle(length) {
     if (length > 0) {
         for (i = 0; i < length; i++) {
             div.removeChild(d[i]);
@@ -203,7 +203,7 @@ function removeStreet(length) {
     }
 
 }
-function removeStreet2(length) {
+function removeCalle2(length) {
     if (length > 0) {
         for (i = 0; i < length; i++) {
             //div.removeChild(d[i]);
@@ -220,11 +220,11 @@ function removeStreet2(length) {
 
 }
 
-function addStreet(data) {
+function addCalle(data) {
 
 
-    if (d.length > 0) {
-        removeStreet(d.length)
+    if (d.length > 0 & layer.length > 0) {
+        removeCalle(d.length)
     }
 
     if (data.length <= 0) {
@@ -284,8 +284,6 @@ function addStreet(data) {
                 layer[i].resetStyle();
                 layer[i].setStyle({ color: 'red' })
                 layer[i].openPopup();
-
-
             })
 
         })
@@ -378,6 +376,7 @@ function addCodigoPostal(data) {
          MUNICIPIO: ${codigoPostal[i].properties.Municipio.toUpperCase()}
         `))
             layerCodigoPostal[i].addTo(map)
+
             layerCodigoPostal[i].addEventListener('mouseover', () => {
 
                 layerCodigoPostal[i].setStyle({ fillColor: "#4B1BDE" }, { color: 'red' });
@@ -395,13 +394,14 @@ function addCodigoPostal(data) {
 }
 
 //funcion que añade un site al mapa
-function addSite(data, marca) {
+function addSiteKFC(data) {
     if (site.length > 0) {
         site.forEach((element, i) => {
 
             map.removeLayer(siteLayer[i])
 
         })
+
         siteLayer = []
         site = []
 
@@ -409,7 +409,7 @@ function addSite(data, marca) {
     else {
 
         const myIcon = L.icon({
-            iconUrl: `../imagenes/${marca}.png`,
+            iconUrl: `../imagenes/KFC.png`,
             iconSize: [30, 30]
         });
 
@@ -458,23 +458,109 @@ function addSite(data, marca) {
          </table>`))
 
             map.addLayer(siteLayer[i])
-           
-            siteLayer[i].addEventListener('mouseover', () =>{
-            
-            tzLayer.setStyle(fill)
-
-            })
-
 
         })
     }
 }
 
+function addSitePH(data) {
+    if (site.length > 0) {
+        site.forEach((element, i) => {
+
+            map.removeLayer(siteLayer[i])
+
+        })
+
+        siteLayer = []
+        site = []
+
+    }
+    else {
+
+        const myIconPH = L.icon({
+            iconUrl: `../imagenes/PH.png`,
+            iconSize: [30, 30]
+        });
+
+        data.forEach((element, i) => {
+
+            site.push(JSON.parse(data[i]))
+
+            siteLayer.push(L.geoJSON(site[i], {
+                pointToLayer: function (geoJsonPoint, latlng) {
+                    return L.marker(latlng, {
+                        icon: myIconPH
+                    });
+                }
+            }).bindPopup(`<table>
+         <tr>
+         
+         <td>${site[i].properties.CC}</td>
+         </tr>
+         <tr>
+         <td>${site[i].properties.Nombre}</td>
+         </tr>
+         <tr>
+         <td>${site[i].properties.Campaña.toUpperCase()}</td>
+         </tr>
+         <tr>
+         <td>${site[i].properties.Marca.toUpperCase()}</td>
+         </tr>
+         <tr>
+         <td>DIRECCION:</td>
+         </tr>
+         <tr>
+        <td>${site[i].properties.DIRECCION}</td>
+         </tr>
+         <tr>
+        <td>${site[i].properties["NUM EXT"]}</td>
+         </tr>
+         <tr>
+        <td>${site[i].properties.Colonia}</td>
+         </tr>
+         <tr>
+         <td>${site[i].properties.Municipo}</td>
+          </tr>
+          <tr>
+         <td>${site[i].properties.Estado}</td>
+          </tr>
+         </table>`))
+
+            map.addLayer(siteLayer[i])
+
+        })
+    }
+}
 
 //funcion que añade tz al mapa
-function addTz(data, id) {
-    const btnmarca = document.getElementById(id)
+function addTzKFC(data) {
+    
+    if (tz.length > 0) {
+        tz.forEach((element, i) => {
 
+            map.removeLayer(layerTz[i])
+
+        })
+        layerTz = []
+        tz = []
+
+       // btnmarca.style.background = '#FFAB4C';
+    }
+    else {
+     
+        data.forEach((element, i) => {
+            tz.push(JSON.parse(data[i]))
+            layerTz.push(L.geoJSON(tz[i], { color: 'rgb(165,39,20)', fillColor: 'rgb(117,117,117)' }).bindPopup(`<p>CC: ${tz[i].properties["CC"]}</p>Marca: ${tz[i].properties["Marca"]}`))
+            map.addLayer(layerTz[i])
+        })
+        groupTZ = L.featureGroup(layerTz).addTo(map).bringToBack();
+
+        //btn.style.background = '#146eb4';
+    }
+
+}
+function addTzPH(data) {
+    
 
     if (tz.length > 0) {
         tz.forEach((element, i) => {
@@ -485,10 +571,10 @@ function addTz(data, id) {
         layerTz = []
         tz = []
 
-        btnmarca.style.background = '#FFAB4C';
-
+        //btnmarca.style.background = '#FFAB4C';
     }
     else {
+     
         data.forEach((element, i) => {
             tz.push(JSON.parse(data[i]))
             layerTz.push(L.geoJSON(tz[i], { color: 'rgb(165,39,20)', fillColor: 'rgb(117,117,117)' }).bindPopup(`<p>CC: ${tz[i].properties["CC"]}</p>Marca: ${tz[i].properties["Marca"]}`))
@@ -496,7 +582,7 @@ function addTz(data, id) {
         })
         groupTZ = L.featureGroup(layerTz).addTo(map).bringToBack();
 
-        btnmarca.style.background = '#146eb4';
+        //btnmarca.style.background = '#146eb4';
     }
 
 }
@@ -519,7 +605,7 @@ const nominatimSearch = async (query) => {
                  por favor verificalos y vuelve a intentarlo`)
             }
             else {
-                addDir(data)
+                addDireccion(data)
             }
         });
 
@@ -601,7 +687,7 @@ txtBntSearch.onclick = async () => {
                     alert("Los criterios de busqueda no regresan resultados, por favor verificalos y vuelve a intentarlo")
                 }
                 else {
-                    addStreet(data)
+                    addCalle(data)
 
                 }
             });
@@ -680,40 +766,78 @@ txtBntSearchFiltro.addEventListener('click', async () => {
 
 })
 
+function addFiltroMunicipio(data) {
+    if (divChild.length > 0) {
 
-function addFiltro(data, Capa) {
+        divChild.forEach((element, i) => {
+            map.removeLayer(layerFiltro[i])
+            div.removeChild(divChild[i])
 
-    if (Capa == "Municipio") {
-        if (municipioFiltro.length > 0) {
-            municipioFiltro = [];
-            layerFiltro = [];
+        })
 
-        }
-        else {
-            data.forEach((element, i) => {
-                municipioFiltro.push(JSON.parse(data[i]))
-                layerFiltro.push(L.geoJSON(municipioFiltro[i]).bindPopup(`<p>Municipio: ${municipioFiltro[i].properties.Municipio}</br> Estado:${municipioFiltro[i].properties.Estado}`))
-                d[i] = document.createElement("div");
-                d[i].innerHTML = `<p>Municipio: ${municipioFiltro[i].properties.Municipio}</br> Estado:${municipioFiltro[i].properties.Estado}`;
-                div.append(d[i]);
-                map.addLayer(layerFiltro[i])
-                map.setView([municipioFiltro[0].properties.Centroide.coordinates[1], municipioFiltro[0].properties.Centroide.coordinates[0]], 10)
-
-            })
-        }
+        municipioFiltro = [];
+        layerFiltro = [];
+        divChild = []
     }
 
-    else if (Capa == "Colonia") {
+    data.forEach((element, i) => {
+        municipioFiltro.push(JSON.parse(data[i]))
+        layerFiltro.push(L.geoJSON(municipioFiltro[i]).bindPopup(`<p>Municipio: ${municipioFiltro[i].properties.Municipio}</br> Estado:${municipioFiltro[i].properties.Estado}`))
+        divChild[i] = document.createElement("div");
+        divChild[i].innerHTML = `<p>Municipio: ${municipioFiltro[i].properties.Municipio}</br> Estado:${municipioFiltro[i].properties.Estado}`;
+        div.append(divChild[i]);
+        map.addLayer(layerFiltro[i])
 
-        if (coloniaFiltro.length > 0) {
-            coloniaFiltro = [];
-            layerFiltro = [];
+        map.setView([municipioFiltro[0].properties.Centroide.coordinates[1], municipioFiltro[0].properties.Centroide.coordinates[0]], 10)
+        divChild[i].addEventListener('click', () => {
+            map.setView(map.getCenter(layerFiltro[i]), 12)
+            layerFiltro[i].openPopup();
+        })
+        layerFiltro[i].addEventListener('mouseover', () => {
+            layerFiltro[i].setStyle({ fillColor: "#4B1BDE" }, { color: 'red' })
+        })
+        layerFiltro[i].addEventListener('mouseout', () => {
+            layerFiltro[i].resetStyle()
+        })
+    })
 
-        }
-        else {
-            data.forEach((element, i) => {
-                coloniaFiltro.push(JSON.parse(data[i]))
-                layerFiltro.push(L.geoJSON(coloniaFiltro[i]).bindPopup(`<table>
+}
+
+function addFiltroColonia(data) {
+    if (divChild.length > 0) {
+        divChild.forEach((element, i) => {
+            map.removeLayer(layerFiltro[i])
+            div.removeChild(divChild[i])
+        })
+        coloniaFiltro = [];
+        layerFiltro = [];
+        divChild = []
+    }
+
+    data.forEach((element, i) => {
+        coloniaFiltro.push(JSON.parse(data[i]))
+        layerFiltro.push(L.geoJSON(coloniaFiltro[i]).bindPopup(`<table>
+        <tr>
+        <td>COLONIA:</td>
+        <td>${coloniaFiltro[i].properties.Colonia}</td>
+        </tr>
+        <tr>
+        <td>COD POSTAL:</td>
+        <td>${coloniaFiltro[i].properties["Codigo Postal"]}</td>
+        </tr>
+        <tr>
+        <td>MUNICIPIO:</td>
+        <td>${coloniaFiltro[i].properties.Municipio.toUpperCase()}</td>
+        </tr>
+        <tr>
+        <td>ESTADO:</td>
+        <td>${coloniaFiltro[i].properties.Estado.toUpperCase()}</td>
+        </tr>
+        </table>`))
+        map.addLayer(layerFiltro[i])
+        map.setView([coloniaFiltro[0].properties.Centroide.coordinates[1], coloniaFiltro[0].properties.Centroide.coordinates[0]], 14)
+        divChild[i] = document.createElement("div");
+        divChild[i].innerHTML = `<table>
             <tr>
             <td>COLONIA:</td>
             <td>${coloniaFiltro[i].properties.Colonia}</td>
@@ -730,73 +854,131 @@ function addFiltro(data, Capa) {
             <td>ESTADO:</td>
             <td>${coloniaFiltro[i].properties.Estado.toUpperCase()}</td>
             </tr>
-            </table>`))
-                map.addLayer(layerFiltro[i])
-                map.setView([coloniaFiltro[0].properties.Centroide.coordinates[1], coloniaFiltro[0].properties.Centroide.coordinates[0]], 14)
+            </table>`;
+        div.append(divChild[i]);
+        divChild[i].addEventListener('click', () => {
+            map.setView(map.getCenter(layerFiltro[i]), 14)
+            layerFiltro[i].openPopup();
+        })
+        layerFiltro[i].addEventListener('mouseover', () => {
+            layerFiltro[i].setStyle({ fillColor: "#4B1BDE" }, { color: 'red' })
+        })
+        layerFiltro[i].addEventListener('mouseout', () => {
+            layerFiltro[i].resetStyle()
+        })
+    })
+}
 
-            })
-        }
+function addFiltroCP(data) {
+    if (divChild.length > 0) {
+        divChild.forEach((element, i) => {
+            map.removeLayer(layerFiltro[i])
+            div.removeChild(divChild[i])
+        })
+        codigoFiltro = [];
+        layerFiltro = [];
+        divChild = []
+    }
+
+    data.forEach((element, i) => {
+        codigoFiltro.push(JSON.parse(data[i]));
+        //console.log(codigoPostal[i])
+        layerFiltro.push(L.geoJSON(codigoFiltro[i]).bindPopup(`<p>CÓDIGO POSTAL: ${codigoFiltro[i].properties.codigo_postal.toUpperCase()} </br>
+         MUNICIPIO: ${codigoFiltro[i].properties.Municipio.toUpperCase()}`))
+        map.addLayer(layerFiltro[i])
+        map.setView([codigoFiltro[0].properties.Centroide.coordinates[1], codigoFiltro[0].properties.Centroide.coordinates[0]], 14)
+        divChild[i] = document.createElement("div");
+        divChild[i].innerHTML = `<p>CÓDIGO POSTAL: ${codigoFiltro[i].properties.codigo_postal.toUpperCase()} </br>
+            MUNICIPIO: ${codigoFiltro[i].properties.Municipio.toUpperCase()}`
+        div.append(divChild[i]);
+        divChild[i].addEventListener('click', () => {
+            map.setView(map.getCenter(layerFiltro[i]), 14)
+            layerFiltro[i].openPopup();
+        })
+        layerFiltro[i].addEventListener('mouseover', () => {
+            layerFiltro[i].setStyle({ fillColor: "#4B1BDE" }, { color: 'red' })
+        })
+        layerFiltro[i].addEventListener('mouseout', () => {
+            layerFiltro[i].resetStyle()
+        })
+    })
+}
+
+
+
+function addFiltro(data, Capa) {
+    if (data.length <= 0) {
+        alert("No hay resultados, intenta nuevamente")
+
+    }
+    if (Capa == "Municipio") {
+
+        addFiltroMunicipio(data)
+
+    }
+
+    else if (Capa == "Colonia") {
+
+        addFiltroColonia(data)
     }
     else if (Capa == "CodigoPostal") {
-        if (codigoFiltro.length > 0) {
-            codigoFiltro = []
-            layerFiltro = []
-        }
-
-        else {
-            data.forEach((element, i) => {
-                codigoFiltro.push(JSON.parse(data[i]));
-                //console.log(codigoPostal[i])
-                layerFiltro.push(L.geoJSON(codigoFiltro[i]).bindPopup(`<p>CÓDIGO POSTAL: ${codigoFiltro[i].properties.codigo_postal.toUpperCase()} </br>
-             MUNICIPIO: ${codigoFiltro[i].properties.Municipio.toUpperCase()}`))
-                map.addLayer(layerFiltro[i])
-                map.setView([codigoFiltro[0].properties.Centroide.coordinates[1], codigoFiltro[0].properties.Centroide.coordinates[0]], 14)
-
-            })
-        }
+        addFiltroCP(data)
     }
-
-
 }
 
-const getSite = async (marca) => {
 
-    let query = `http://localhost:3000/sites/${marca}`;
+
+const getSiteKFC = async () => {
+       let query = `http://localhost:3000/sites/KFC`;
     await fetch(`${query}`)
         .then(response => response.json())
         .then(data => {
-            addSite(data, marca)
+            addSiteKFC(data)
         })
+}
+
+const getSitePH = async () => {
+    let query = `http://localhost:3000/sites/PH`;
+ await fetch(`${query}`)
+     .then(response => response.json())
+     .then(data => {
+         addSitePH(data)
+     })
 }
 
 
 
-
-const getTz = async (marca, id) => {
-    let query = `http://localhost:3000/tz/${marca}`;
+const getTzKFC = async () => {
+    let query = `http://localhost:3000/tz/KFC`;
     await fetch(`${query}`)
         .then(response => response.json())
         .then(data => {
 
-            addTz(data, id)
+            addTzKFC(data)
         })
+}
+const getTzPH = async () => {
+    let query = `http://localhost:3000/tz/PH`;
+    await fetch(`${query}`)
+        .then(response => response.json())
+        .then(data => {
 
+            addTzPH(data)
+        })
 }
 
+btnPH.addEventListener('click', () => {
 
-btnPh.addEventListener('click', () => {
+    getSitePH();
+    getTzPH();
 
-    getSite(btnPh.value);
-
-    getTz(btnPh.value, btnPh.id);
 })
 
 //btnKFC.addEventListener('click',getTz())
 btnKFC.addEventListener('click', () => {
-
-    getSite(btnKFC.value);
-    getTz(btnKFC.value, btnKFC.id);
+    getSiteKFC();
+    getTzKFC();
 })
-getSite(btnKFC.value);
-getTz(btnKFC.value, btnKFC.id)
-//addEventListener('click'
+
+getSiteKFC();
+getTzKFC();
