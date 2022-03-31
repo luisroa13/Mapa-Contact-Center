@@ -25,7 +25,8 @@ const capasMap = {
     'Google maps': capaGMaps
 }
 
-
+const mapasBase=new L.control.layers(capasMap)
+mapasBase.addTo(map)
 const bntSearchEs = document.getElementById("bntSearchEs");
 const bntSearchMun = document.getElementById("bntSearchMun");
 const btnSearch = document.getElementById("btnSearch");
@@ -73,6 +74,13 @@ let site = []
 let tz = []
 let layerTz = []
 
+
+let txtQuery = document.getElementById("query");
+
+txtQuery.addEventListener('keypress',()=>{
+
+    nominatimSearch(txtQuery.value)
+})
 // funcion que añade un estado a el mapa
 async function addEstado(data) {
 
@@ -168,7 +176,7 @@ async function addMunicipio(data) {
 
             layerMunicipio[i].addEventListener('mouseover', () => {
 
-                layerMunicipio[i].setStyle({ fillColor: "rgb(165,39,20)", }, { draggable: true }, { color: 'rgb(165,39,20)' });
+                layerMunicipio[i].setStyle({ fillColor: "rgb(165,39,20)", }, { color: 'rgb(165,39,20)' });
             })
             layerMunicipio[i].addEventListener('mouseout', () => {
 
@@ -314,9 +322,7 @@ async function addColonia(data) {
 
             colonia.push(JSON.parse(data[i]));
 
-            layerColonia.push(L.geoJSON(colonia[i], {
-                draggable: true // to move polygon , add this 
-            }).bindPopup(`<table>
+            layerColonia.push(L.geoJSON(colonia[i]).bindPopup(`<table>
         <tr>
         <td>COLONIA:</td>
         <td>${colonia[i].properties.Colonia}</td>
