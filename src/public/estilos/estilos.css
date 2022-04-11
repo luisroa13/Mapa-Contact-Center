@@ -61,6 +61,14 @@ body {
 	border-radius: 3px;
 	padding: 10px;
 }
+.contenedor .header > a{
+	text-decoration: none;
+	background-color: #FFAB4C;
+	color: #142F43;
+	border: none;
+	border-radius: 3px;
+	padding: 10px;
+}
 .contenedor .contenido {
 	grid-area: contenido;
 }

@@ -415,7 +415,7 @@ function addSiteKFC(data) {
     else {
 
         const myIcon = L.icon({
-            iconUrl: `../imagenes/KFC.png`,
+            iconUrl: `../public/imagenes/KFC.png`,
             iconSize: [30, 30]
         });
 

@@ -175,7 +175,7 @@ controllerData.getCodigosPostales =  (req, res, next) => {
   ) b`
 
 
-   let query = pool.query(queryLayer, async (err, resp) => {
+   let query = pool.query(queryLayer, (err, resp) => {
      if (err) {
         return console.error('Error ejecutando la consulta. ', err.stack);
      }
@@ -188,7 +188,7 @@ controllerData.getCodigosPostales =  (req, res, next) => {
        array.push((resp.rows[i].st_asgeojson));
         
      }
-      await res.json(array);
+      res.json(array);
 
    })
 

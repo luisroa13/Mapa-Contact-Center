@@ -21,13 +21,30 @@ router.get('../index.js',(req,res)=>{
     });
     
 router.get('/', (req, res) => {
-    res.redirect('../views/index.html');
+    res.render('../views/login',{
+        alert:false,
+        alertTitle:"Advertencia",
+        alertMessage:"Usuario o contraseña incorrectos",
+        alertIcon:"info",
+        showConfirmButton:true,
+        timer:false,
+        ruta:'login'
+    });
     
 });
 router.get('/views/login', (req, res) => {
-    res.redirect('../views/login.html');
-    
+    res.render('../views/login',{
+        alert:false,
+        alertTitle:"Advertencia",
+        alertMessage:"Usuario o contraseña incorrectos",
+        alertIcon:"info",
+        showConfirmButton:true,
+        timer:false,
+        ruta:'login'
+    });
 });
+
+
 
 
 module.exports = router;
