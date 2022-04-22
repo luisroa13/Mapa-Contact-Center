@@ -87,8 +87,8 @@
 
         </main>
         <aside class="resultados" id="resultados">
+            <input type="button" id="btnLimpipiar"value="Limpiar Resultados">
             <h3>Resultados de busqueda</h3>
-            <input type="button" value="Limpiar Resultaos">
             <div id="res" class="resultadosContainer">
             </div>
             
@@ -147,47 +147,7 @@
         <div id="tvesModal2" class="modalContainer2">
             <span class="close">×</span>
             <div class="modal-content2">
-                <h3>Selecciona un estado</h3>
-                <br>
-                <select name="Estados" id="estadosFiltro">
-                    <option value="15">Estado de México</option>
-                    <option value="09">Ciudad de México</option>
-                    <option value="14">Jalisco</option>
-                    <option value="19">Nuevo León</option>
-                    <option value="01">Aguascalientes</option>
-                    <option value="02">Baja California</option>
-                    <option value="03">Baja California Sur</option>
-                    <option value="04">Campeche</option>
-                    <option value="05">Coahuila de Zaragoza</option>
-                    <option value="06">Colima</option>
-                    <option value="07">Chiapas</option>
-                    <option value="08">Chihuahua</option>
-
-                    <option value="10">Durango</option>
-                    <option value="11">Guanajuato</option>
-                    <option value="12">Guerrero</option>
-                    <option value="13">Hidalgo</option>
-
-
-                    <option value="16">Michoacán de Ocampo</option>
-                    <option value="17">Morelos</option>
-                    <option value="18">Nayarit</option>
-
-                    <option value="20">Oaxaca</option>
-                    <option value="21">Puebla</option>
-                    <option value="22">Querétaro</option>
-                    <option value="23">Quintana Roo</option>
-                    <option value="24">San Luis Potosí</option>
-                    <option value="25">Sinaloa</option>
-                    <option value="26">Sonora</option>
-                    <option value="27">Tabasco</option>
-                    <option value="28">Tamaulipas</option>
-                    <option value="29">Tlaxcala</option>
-                    <option value="30">Veracruz de Ignacio de la Llave</option>
-                    <option value="31">Yucatan</option>
-                    <option value="32">Zacatecas</option>
-                </select>
-                <br>
+            
                 <h3>Selecciona una capa</h3>
                 <br>
                 <select id="Capa">
@@ -196,7 +156,7 @@
                     <option value="CodigoPostal">Codigo Postales</option>
                 </select>
 
-                
+                <input type="text" id="estadosFiltro" placeholder="Municipio/Estado">                
                 <input type="text" id="txtFiltro" placeholder="Buscar">
                 <input type="button" id="txtBntSearchFiltro" value="Filtrar">
 

@@ -111,6 +111,24 @@ body {
 	min-height: 100px;
 	grid-area: resultados;
 }
+.contenedor .resultados > h3 {
+	margin-top: 0px;
+	padding: 0px;
+}
+
+.contenedor .resultados > input[type=button] {
+	margin-bottom: 0px;
+	padding: 0px;
+	border-radius: 5px;
+	border: none;
+	width: 80%;
+	max-width: 300px;
+	padding: 5px;
+	margin: auto;
+	background: #5580dd;
+	color: white;
+
+}
 
 .contenedor .resultados .resultadosContainer {
 	height: auto;
@@ -267,7 +285,7 @@ margin: auto;
 			left: 30%;
 
 			max-width: 200px;
-			height: 400px;
+			height: 300px;
 	        align-content: center;		 
 			border-radius: 5px;
             color: #fff;

@@ -12,6 +12,7 @@ router.get('/FiltrarColonia/:estado/:valor',capas.controllerData.getFiltroColoni
 router.get('/FiltrarCodigoPostal/:estado/:valor',capas.controllerData.getFiltroCodigoPostal);
 router.get('/tz/:marca',capas.controllerData.getTz);
 router.get('/sites/:marca',capas.controllerData.getSites);
+router.get('/placemark/:marca')
 //router.get('/Filtrar/:estado/Colonia/:valor');
 //router.get('/Filtrar/:estado/CodigoPostal/:valor');
 router.get('../index.js',(req,res)=>{
@@ -32,6 +33,7 @@ router.get('/', (req, res) => {
     });
     
 });
+
 router.get('/views/login', (req, res) => {
     res.render('../views/login',{
         alert:false,

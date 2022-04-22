@@ -32,6 +32,7 @@ controllerData.getEstados = (req, res, next) => {
 
     let i;
     for (i = 0; i < resp.rows.length; i++) {
+
       array.push((resp.rows[i].st_asgeojson));
     }
 
@@ -102,7 +103,7 @@ controllerData.getMunicipios = (req, res, next) => {
 
 
   let queryLayer = `select ST_AsGeoJSON(b.*) from (select m.nombre_municipio as "Municipio", 
-  m.cve_mun as "Clave Municipio",m.cve_ent as "Clave Estado", 
+  m.cve_mun as "Clave Municipio", m.cve_ent as "Clave Estado", 
   e.nombre_estado as "Estado", m.geometria
   from municipios m 
   inner join "Estados" e on m.cve_ent=e.clave_ent where m.cve_ent='${idEstado}') b`
@@ -123,7 +124,6 @@ controllerData.getMunicipios = (req, res, next) => {
     //console.log(array);
 
     await res.json(array)
-
   })
 }
 
@@ -200,11 +200,13 @@ controllerData.getFiltroMunicipio =  (req, res, next) => {
 
   const idEstado = req.params.estado;
   const valor=req.params.valor;
+
   let queryLayer = `select ST_AsGeoJSON(b.*) from (select m.nombre_municipio as "Municipio", 
   m.cve_mun as "Clave Municipio",m.cve_ent as "Clave Estado", 
   e.nombre_estado as "Estado", m.geometria,ST_CENTROID(m.geometria) as "Centroide"
   from municipios m 
-  inner join "Estados" e on m.cve_ent=e.clave_ent where m.cve_ent='${idEstado}' 
+  inner join "Estados" e on m.cve_ent=e.clave_ent 
+  where (m.nombre_municipio like '%${idEstado}%' or e.nombre_estado like='%${idEstado}%') 
   and m.nombre_municipio like '%${valor}%' ) b`
 
 
@@ -234,11 +236,12 @@ controllerData.getFiltroColonia =  (req, res, next) => {
 
   const idEstado = req.params.estado;
   const valor=req.params.valor;
-
+console.log(idEstado, valor)
 let queryLayer = `select  ST_AsGeoJSON(b.*) from (select c.geom "Geometria", c.nom_col as "Colonia", m.nombre_municipio as "Municipio",
 c.cod_post as "Codigo Postal",e.nombre_estado as "Estado",c.cve_ent, ST_CENTROID(C.geom) as "Centroide" from "colonias2020" c
 inner join "Estados" e on c.cve_ent=e.clave_ent
-inner join municipios m on c.id_municipio=m.id_municipio where c.cve_ent='${idEstado}'
+inner join municipios m on c.id_municipio=m.id_municipio 
+where (e.nombre_estado like'%${idEstado}%' or m.nombre_municipio like'%${idEstado}%')
 and (c.nom_col like '%${valor}%' or  c.cod_post like '%${valor}%')
 )b` 
 
@@ -286,7 +289,8 @@ let queryLayer = `select  ST_AsGeoJSON(b.*)
 
 
    let query = pool.query(queryLayer, async (err, resp) => {
-     if (err) {
+     
+    if (err) {
         return console.error('Error ejecutando la consulta. ', err.stack);
      }
 
@@ -308,10 +312,11 @@ let queryLayer = `select  ST_AsGeoJSON(b.*)
 controllerData.getSites =  (req, res, next) => {
 
 const marca=req.params.marca
+
 let queryLayer = `select  ST_AsGeoJSON(b.*) 
 from ( select site.geom, site."CC", site."Nombre",campana.nombre_campana as "Campaña",
   marca.nombre_marca as "Marca", site."Estado", 
-  site."Estado",site."Municipo",site."Colonia",site."DIRECCION",
+  site."Estado",site."Municipio",site."Colonia",site."DIRECCION",
   site."Calle 1", site."Calle 2",site."Ageb",site."NUM EXT",site."TELEFONO"
   FROM "SITES" site
   INNER join "Campana" campana on site."Campana"=campana.id_campana
@@ -335,6 +340,7 @@ from ( select site.geom, site."CC", site."Nombre",campana.nombre_campana as "Cam
        array.push((resp.rows[i].st_asgeojson));
         
      }
+
       await res.json(array);
 
    })

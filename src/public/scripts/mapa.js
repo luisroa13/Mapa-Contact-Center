@@ -1,5 +1,4 @@
 
-
 const map = L.map('map').setView([19.35941466493296, -99.15019173874926], 17);
 
 
@@ -25,7 +24,7 @@ const capasMap = {
     'Google maps': capaGMaps
 }
 
-const mapasBase=new L.control.layers(capasMap)
+const mapasBase = new L.control.layers(capasMap)
 mapasBase.addTo(map)
 const bntSearchEs = document.getElementById("bntSearchEs");
 const bntSearchMun = document.getElementById("bntSearchMun");
@@ -73,14 +72,19 @@ let siteLayer = []
 let site = []
 let tz = []
 let layerTz = []
+const btnLimpipiar = document.getElementById('btnLimpipiar')
 
 
 let txtQuery = document.getElementById("query");
 
-txtQuery.addEventListener('keypress',()=>{
+txtQuery.addEventListener('keypress', (e) => {
 
-    nominatimSearch(txtQuery.value)
+    if (e.keyCode == 13) {
+        nominatimSearch(txtQuery.value)
+    }
 })
+
+
 // funcion que añade un estado a el mapa
 async function addEstado(data) {
 
@@ -93,6 +97,7 @@ async function addEstado(data) {
         bntSearchEs.style.background = '#d7d7d8';
 
     }
+
     else {
         await data.forEach((element, i) => {
             estado.push(JSON.parse(data[i]));
@@ -107,10 +112,8 @@ async function addEstado(data) {
 
                 layerEstado[i].resetStyle();
             })
-
-
-
         })
+
         bntSearchEs.style.background = '#146eb4';
     }
 }
@@ -141,10 +144,7 @@ async function addDireccion(data) {
         //layer[i].openPopup();
         //})
         map.panTo([lat[i], lang[i]], 16);
-
     })
-
-
 }
 
 
@@ -163,6 +163,7 @@ async function addMunicipio(data) {
         bntSearchMun.style.background = '#d7d7d8';
 
     }
+
     else {
 
         await data.forEach((element, i) => {
@@ -279,7 +280,9 @@ function addCalle(data) {
 
             layer.push(L.geoJSON(calle[i], { weight: 5 }).bindPopup(popup[i]));
             map.addLayer(layer[i]);
+
             d[i] = document.createElement("div");
+
             d[i].innerHTML = popup[i];
 
             div.append(d[i]);
@@ -293,7 +296,6 @@ function addCalle(data) {
                 layer[i].setStyle({ color: 'red' })
                 layer[i].openPopup();
             })
-
         })
 
         map.setView([lang[0], lat[0]], 18)
@@ -343,6 +345,7 @@ async function addColonia(data) {
             //layerColonia[i].addTo(map)
             // drawnItems.addLayer(layerColonia[i], { color: 'black' });
             map.addLayer(layerColonia[i], { color: 'black' });
+
             layerColonia[i].addEventListener('mouseover', () => {
 
                 layerColonia[i].setStyle({ fillColor: "#4B1BDE" }, { color: 'red' });
@@ -371,7 +374,6 @@ function addCodigoPostal(data) {
         codigoPostal = []
         layerCodigoPostal = []
         btnCp.style.background = '#d7d7d8';
-
     }
     else {
 
@@ -381,6 +383,7 @@ function addCodigoPostal(data) {
             layerCodigoPostal.push(L.geoJSON(codigoPostal[i]).bindPopup(`<p>CÓDIGO POSTAL: ${codigoPostal[i].properties.codigo_postal.toUpperCase()} </br>
          MUNICIPIO: ${codigoPostal[i].properties.Municipio.toUpperCase()}
         `))
+
             layerCodigoPostal[i].addTo(map)
 
             layerCodigoPostal[i].addEventListener('mouseover', () => {
@@ -394,6 +397,7 @@ function addCodigoPostal(data) {
             })
 
         })
+
         btnCp.style.background = '#146eb4';
 
     }
@@ -415,7 +419,7 @@ function addSiteKFC(data) {
     else {
 
         const myIcon = L.icon({
-            iconUrl: `../public/imagenes/KFC.png`,
+            iconUrl: `../../public/imagenes/KFC.png`,
             iconSize: [30, 30]
         });
 
@@ -481,10 +485,11 @@ function addSitePH(data) {
         site = []
 
     }
+
     else {
 
         const myIconPH = L.icon({
-            iconUrl: `../imagenes/PH.png`,
+            iconUrl: `../../public/imagenes/PH.png`,
             iconSize: [30, 30]
         });
 
@@ -540,7 +545,7 @@ function addSitePH(data) {
 
 //funcion que añade tz al mapa
 function addTzKFC(data) {
-    
+
     if (tz.length > 0) {
         tz.forEach((element, i) => {
 
@@ -550,15 +555,17 @@ function addTzKFC(data) {
         layerTz = []
         tz = []
 
-       // btnmarca.style.background = '#FFAB4C';
+        // btnmarca.style.background = '#FFAB4C';
     }
+
     else {
-     
+
         data.forEach((element, i) => {
             tz.push(JSON.parse(data[i]))
             layerTz.push(L.geoJSON(tz[i], { color: 'rgb(165,39,20)', fillColor: 'rgb(117,117,117)' }).bindPopup(`<p>CC: ${tz[i].properties["CC"]}</p>Marca: ${tz[i].properties["Marca"]}`))
             map.addLayer(layerTz[i])
         })
+
         groupTZ = L.featureGroup(layerTz).addTo(map).bringToBack();
 
         //btn.style.background = '#146eb4';
@@ -566,7 +573,7 @@ function addTzKFC(data) {
 
 }
 function addTzPH(data) {
-    
+
 
     if (tz.length > 0) {
         tz.forEach((element, i) => {
@@ -580,7 +587,7 @@ function addTzPH(data) {
         //btnmarca.style.background = '#FFAB4C';
     }
     else {
-     
+
         data.forEach((element, i) => {
             tz.push(JSON.parse(data[i]))
             layerTz.push(L.geoJSON(tz[i], { color: 'rgb(165,39,20)', fillColor: 'rgb(117,117,117)' }).bindPopup(`<p>CC: ${tz[i].properties["CC"]}</p>Marca: ${tz[i].properties["Marca"]}`))
@@ -614,10 +621,11 @@ const nominatimSearch = async (query) => {
                 addDireccion(data)
             }
         });
-
-
 }
 
+btnLimpipiar.addEventListener('click', () => {
+    eliminarFiltro()
+})
 
 btnSearch.addEventListener('click', async () => {
     let query = document.getElementById("query").value;
@@ -628,6 +636,7 @@ btnSearch.addEventListener('click', async () => {
 
 // evento que al hacer click en el boton estados  realiza una peticion a la api sobre los municipios
 bntSearchMun.addEventListener('click', async () => {
+
     let id_Estado = document.getElementById("Estados").value;
 
     await fetch(`http://localhost:3000/Municipios/${id_Estado}`)
@@ -650,6 +659,7 @@ bntSearchEs.addEventListener('click', async () => {
 })
 //codigos postaes
 btnCp.addEventListener('click', async () => {
+
     let id_Estado = document.getElementById("Estados").value;
     await fetch(`http://localhost:3000/Codigos/${id_Estado}`)
         .then(response => response.json())
@@ -667,6 +677,7 @@ txtBntSearch.onclick = async () => {
     let idEstado = document.getElementById('EstadosbAb').value;
     let txtColonia = document.getElementById('txtColonia').value.toUpperCase();
     let query;
+
     if (txtSearchCalle == "") {
         alert("Ingresa El nombre de una calle")
     }
@@ -692,6 +703,7 @@ txtBntSearch.onclick = async () => {
 
                     alert("Los criterios de busqueda no regresan resultados, por favor verificalos y vuelve a intentarlo")
                 }
+
                 else {
                     addCalle(data)
 
@@ -702,6 +714,8 @@ txtBntSearch.onclick = async () => {
 }
 
 const btnFiltro = document.getElementById("btnFiltro");
+
+
 btnFiltro.onclick = function () {
 
     modal2.style.display = "block";
@@ -758,10 +772,11 @@ btnColonias.addEventListener('click', async () => {
 
 const txtBntSearchFiltro = document.getElementById("txtBntSearchFiltro")
 txtBntSearchFiltro.addEventListener('click', async () => {
-    let estadosFiltro = document.getElementById("estadosFiltro").value;
 
+    let estadosFiltro = document.getElementById("estadosFiltro").value.toUpperCase();
     let capa = document.getElementById("Capa").value;
     let txtFiltro = document.getElementById("txtFiltro").value.toUpperCase();
+    
     let query = `http://localhost:3000/Filtrar${capa}/${estadosFiltro}/${txtFiltro}`;
     console.log(query)
     await fetch(`${query}`)
@@ -769,32 +784,27 @@ txtBntSearchFiltro.addEventListener('click', async () => {
         .then(data => {
             addFiltro(data, capa)
         })
-
 })
 
 function addFiltroMunicipio(data) {
     if (divChild.length > 0) {
-
-        divChild.forEach((element, i) => {
-            map.removeLayer(layerFiltro[i])
-            div.removeChild(divChild[i])
-
-        })
-
-        municipioFiltro = [];
-        layerFiltro = [];
-        divChild = []
+        eliminarFiltro()
     }
 
     data.forEach((element, i) => {
         municipioFiltro.push(JSON.parse(data[i]))
         layerFiltro.push(L.geoJSON(municipioFiltro[i]).bindPopup(`<p>Municipio: ${municipioFiltro[i].properties.Municipio}</br> Estado:${municipioFiltro[i].properties.Estado}`))
+
         divChild[i] = document.createElement("div");
+
         divChild[i].innerHTML = `<p>Municipio: ${municipioFiltro[i].properties.Municipio}</br> Estado:${municipioFiltro[i].properties.Estado}`;
+
         div.append(divChild[i]);
+
         map.addLayer(layerFiltro[i])
 
         map.setView([municipioFiltro[0].properties.Centroide.coordinates[1], municipioFiltro[0].properties.Centroide.coordinates[0]], 10)
+
         divChild[i].addEventListener('click', () => {
             map.setView(map.getCenter(layerFiltro[i]), 12)
             layerFiltro[i].openPopup();
@@ -810,16 +820,11 @@ function addFiltroMunicipio(data) {
 }
 
 function addFiltroColonia(data) {
-    if (divChild.length > 0) {
-        divChild.forEach((element, i) => {
-            map.removeLayer(layerFiltro[i])
-            div.removeChild(divChild[i])
-        })
-        coloniaFiltro = [];
-        layerFiltro = [];
-        divChild = []
-    }
+    if (layerFiltro.length > 0) {
 
+        eliminarFiltro()
+    }
+    
     data.forEach((element, i) => {
         coloniaFiltro.push(JSON.parse(data[i]))
         layerFiltro.push(L.geoJSON(coloniaFiltro[i]).bindPopup(`<table>
@@ -861,7 +866,9 @@ function addFiltroColonia(data) {
             <td>${coloniaFiltro[i].properties.Estado.toUpperCase()}</td>
             </tr>
             </table>`;
+
         div.append(divChild[i]);
+
         divChild[i].addEventListener('click', () => {
             map.setView(map.getCenter(layerFiltro[i]), 14)
             layerFiltro[i].openPopup();
@@ -875,15 +882,22 @@ function addFiltroColonia(data) {
     })
 }
 
+const eliminarFiltro = () => {
+    divChild.forEach((element, i) => {
+        map.removeLayer(layerFiltro[i])
+        div.removeChild(divChild[i])
+    })
+    codigoFiltro = [];
+    coloniaFiltro=[]
+    municipioFiltro=[]
+    layerFiltro = [];
+    divChild = []
+    //return codigoFiltro,layerFiltro,divChild
+}
+
 function addFiltroCP(data) {
     if (divChild.length > 0) {
-        divChild.forEach((element, i) => {
-            map.removeLayer(layerFiltro[i])
-            div.removeChild(divChild[i])
-        })
-        codigoFiltro = [];
-        layerFiltro = [];
-        divChild = []
+        eliminarFiltro()
     }
 
     data.forEach((element, i) => {
@@ -891,12 +905,18 @@ function addFiltroCP(data) {
         //console.log(codigoPostal[i])
         layerFiltro.push(L.geoJSON(codigoFiltro[i]).bindPopup(`<p>CÓDIGO POSTAL: ${codigoFiltro[i].properties.codigo_postal.toUpperCase()} </br>
          MUNICIPIO: ${codigoFiltro[i].properties.Municipio.toUpperCase()}`))
+
         map.addLayer(layerFiltro[i])
+
         map.setView([codigoFiltro[0].properties.Centroide.coordinates[1], codigoFiltro[0].properties.Centroide.coordinates[0]], 14)
+
         divChild[i] = document.createElement("div");
+
         divChild[i].innerHTML = `<p>CÓDIGO POSTAL: ${codigoFiltro[i].properties.codigo_postal.toUpperCase()} </br>
             MUNICIPIO: ${codigoFiltro[i].properties.Municipio.toUpperCase()}`
+
         div.append(divChild[i]);
+
         divChild[i].addEventListener('click', () => {
             map.setView(map.getCenter(layerFiltro[i]), 14)
             layerFiltro[i].openPopup();
@@ -917,6 +937,7 @@ function addFiltro(data, Capa) {
         alert("No hay resultados, intenta nuevamente")
 
     }
+
     if (Capa == "Municipio") {
 
         addFiltroMunicipio(data)
@@ -935,7 +956,7 @@ function addFiltro(data, Capa) {
 
 
 const getSiteKFC = async () => {
-       let query = `http://localhost:3000/sites/KFC`;
+    let query = `http://localhost:3000/sites/KFC`;
     await fetch(`${query}`)
         .then(response => response.json())
         .then(data => {
@@ -945,11 +966,11 @@ const getSiteKFC = async () => {
 
 const getSitePH = async () => {
     let query = `http://localhost:3000/sites/PH`;
- await fetch(`${query}`)
-     .then(response => response.json())
-     .then(data => {
-         addSitePH(data)
-     })
+    await fetch(`${query}`)
+        .then(response => response.json())
+        .then(data => {
+            addSitePH(data)
+        })
 }
 
 
