@@ -6,10 +6,11 @@ const btnEnviar=document.getElementById('btnEnviar')
 
 cargarPlacemark.addEventListener('change', (e) => {
     let reader = new FileReader()
-    reader.readAsText(actualizarPlacemark.files[0])
+    reader.readAsText(cargarPlacemark.files[0])
     let marca = document.getElementById('Marca').value
    let campana = document.getElementById('campana').value
-    reader.onload = () => {
+    
+        reader.onload = () => {
         
         let parser = new DOMParser()
         let xmlDoc = parser.parseFromString(reader.result, "text/xml")
@@ -84,6 +85,9 @@ const enviarDataTZ=(tz)=>{
                 text: 'La carga se ha realizado de forma exitosa',
                 icon: 'success',
                 confirmButtonText: 'Aceptar'
+              })
+              .then((result)=>{
+              window.location.assign("/views/Mapas/cargarPlacemark")
               })
         }
     })

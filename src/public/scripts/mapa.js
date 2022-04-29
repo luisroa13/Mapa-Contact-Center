@@ -454,7 +454,7 @@ function addSiteKFC(data) {
         <td>${site[i].properties.DIRECCION}</td>
          </tr>
          <tr>
-        <td>${site[i].properties["NUM EXT"]}</td>
+        <td>${site[i].properties["Numero"]}</td>
          </tr>
          <tr>
         <td>${site[i].properties.Colonia}</td>

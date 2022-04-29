@@ -129,6 +129,7 @@ controllerUser.cargarPlacemark=(req,res)=>{
       res.status(500).json({ error: 'message' })
       return console.log(err.stack)
     }
+    else{
       let query = pool.query(queryUser, async (err, resp) => {
         if (err) {
           res.status(500).json({ error: 'message' })
@@ -139,6 +140,7 @@ controllerUser.cargarPlacemark=(req,res)=>{
           res.json({respuesta:respuesta})
           }    
       })
+    }
     
   })
 }
@@ -146,10 +148,9 @@ controllerUser.cargarPlacemark=(req,res)=>{
 controllerUser.actualizarPlacemark=(req,res)=>{
   let coordenadas=req.body.coordenadas
   let cc=req.body.name
-  let site=req.body.site
-  let queryUser=`insert into "TZ" (geom,"Name","Marca") values(ST_GeometryFromText('POLYGON Z((${coordenadas}))'),'${cc}','${marca}')`
-  
-      let query = pool.query(queryUser, async (err, resp) => {
+  let queryTZ=`UPDATE "TZ" set geom=ST_GeometryFromText('POLYGON Z((${coordenadas}))') where "Name"='${cc}'`
+   
+      let query = pool.query(queryTZ, async (err, resp) => {
         if (err) {
           res.status(500).json({ error: 'message' })
           return console.log(err.stack)
@@ -159,7 +160,32 @@ controllerUser.actualizarPlacemark=(req,res)=>{
           res.json({respuesta:respuesta})
           }    
       })
+}
+
+controllerUser.eliminarPlacemark=(req,res)=>{
+  let CC=req.body.CC
+   let queryTz=`delete from "TZ" where "Name"=${CC}`
+   let querySite=`delete from "SITES" where "CC"=${CC}`
+  let query = pool.query(queryTz, async (err, resp) => {
+    if (err) {
+      res.status(500).json({ error: 'message' })
+      return console.log(err.stack)
+    }
+    else {
+      let query2 = pool.query(querySite, async (err, resp) => {
+        if (err) {
+          res.status(500).json({ error: 'message' })
+          return console.log(err.stack)
+        }
+        else {
+          respuesta='ok'
+          res.json({respuesta:respuesta})
+          }    
+      })
+      }    
+  })
 
 }
+
 
 module.exports = { controllerUser }

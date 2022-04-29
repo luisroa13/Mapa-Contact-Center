@@ -317,7 +317,7 @@ let queryLayer = `select  ST_AsGeoJSON(b.*)
 from ( select site.geom, site."CC", site."Nombre",campana.nombre_campana as "Campaña",
   marca.nombre_marca as "Marca", site."Estado", 
   site."Estado",site."Municipio",site."Colonia",site."DIRECCION",
-  site."Calle 1", site."Calle 2",site."Ageb",site."NUM EXT",site."TELEFONO"
+  site."Calle 1", site."Calle 2",site."Ageb",site."NUM EXT" as "Numero",site."TELEFONO"
   FROM "SITES" site
   INNER join "Campana" campana on site."Campana"=campana.id_campana
   INNER JOIN "Marca" marca on site."Marca"=marca.id_marca
@@ -352,8 +352,8 @@ controllerData.getTz =  (req, res, next) => {
   const queryLayer = `select  ST_AsGeoJSON(b.*) 
   from ( 
     select tz.geom, tz."Name" as "CC", marca.nombre_marca as "Marca" FROM "TZ" tz
-    inner join "Marca" marca on tz."Marca"= marca.id_marca
-  where marca.nombre_marca='${marca}'
+    inner join "Marca" marca on tz."Marca"= marca.id_marca 
+  where marca.nombre_marca='${marca}' order By tz."Name"
   ) b`
   
   
