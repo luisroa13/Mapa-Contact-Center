@@ -236,7 +236,6 @@ controllerData.getFiltroColonia =  (req, res, next) => {
 
   const idEstado = req.params.estado;
   const valor=req.params.valor;
-console.log(idEstado, valor)
 let queryLayer = `select  ST_AsGeoJSON(b.*) from (select c.geom "Geometria", c.nom_col as "Colonia", m.nombre_municipio as "Municipio",
 c.cod_post as "Codigo Postal",e.nombre_estado as "Estado",c.cve_ent, ST_CENTROID(C.geom) as "Centroide" from "colonias2020" c
 inner join "Estados" e on c.cve_ent=e.clave_ent
@@ -377,5 +376,44 @@ controllerData.getTz =  (req, res, next) => {
      })
   
   }
+
+  controllerData.getPlacemark =  (req, res, next) => {
+    let cc=req.params.cc
+    let queryLayer = `select "TZ"."Name", st_AsText("TZ".geom), ST_X (ST_Transform ("SITES".geom, 4326)) AS longitud,
+    ST_Y (ST_Transform ("SITES".geom, 4326)) AS latitud 
+  from "TZ","SITES" where "TZ"."Name" = "SITES"."CC" and  "TZ"."Name"='${cc}'`
+       let query = pool.query(queryLayer, async (err, resp) => {
+         if (err) {
+            return console.error('Error ejecutando la consulta. ', err.stack);
+         }
+          await res.json(resp.rows[0]);
+    
+       })
+    
+    }
+
+    controllerData.getAgebs =  (req, res, next) => {
+      let cc=req.params.cc
+      let queryLayer = `select st_AsGeoJSON(b.*) from (
+      select * from "Agebs" where "CC"='${cc}'
+      )b`
+         let query = pool.query(queryLayer, async (err, resp) => {
+           if (err) {
+              return console.error('Error ejecutando la consulta. ', err.stack);
+           }
+
+           let array = new Array();
+      
+       let i;
+       for (i = 0; i < resp.rows.length; i++) {
+      
+         array.push((resp.rows[i].st_asgeojson));
+          
+       }
+            await res.json(array);
+      
+         })
+      
+      }
 
 module.exports = { controllerData }

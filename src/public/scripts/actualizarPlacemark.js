@@ -23,6 +23,7 @@ inputActualizarPlacemark.addEventListener('change',(e)=>{
             name:name,
             coordenadas:coordenadasTZ
             }
+            
             btnActualizar.addEventListener('click',()=>{
                 enviarDataTZ(tz)
             })

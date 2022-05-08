@@ -24,6 +24,7 @@ controllerUser.userRegister = async (req, res, next) => {
   const pass = req.body.pass
   const user = generaeUser(nombre, apellidoP, apellidoM)
 
+   
   let passHash = await bcryptjs.hash(pass, 8)
 
   const queryUser = `insert into usuarios values ('${user}','${nombre}','${apellidoP}','${apellidoM}','${tipo}','${passHash}')`
@@ -188,4 +189,33 @@ controllerUser.eliminarPlacemark=(req,res)=>{
 }
 
 
+
+controllerUser.cargarPickup=(req,res)=>{
+  let nombre=req.body.NOMBRE
+  let estado=req.body.ESTADO
+  let municipio=req.body.MUNICIPIO
+  let colonia=req.body.COLONIA
+  let calle=req.body.CALLE
+  let esquina_1=req.body['ESQUINA 1'] 
+  let esquina_2=req.body['ESQUINA 2'] 
+  let ageb=req.body.AGEB
+  let numero=req.body.NUMERO
+  let centro=req.body.CC
+//  console.log(CC,nombre,esquina_1,esquina_2,estado,municipio,calle,ageb,numero)
+
+  let queryPickup=`UPDATE "SITES" SET "Nombre"='${nombre}',"Estado"='${estado}',"Municipio"='${municipio}',
+  "Colonia"='${colonia}', "DIRECCION"='${calle}', "NUM EXT"='${numero}',"Ageb"='${ageb}' ,
+  "Calle 1"='${esquina_1}', "Calle 2"='${esquina_2}'
+   where "CC"='${centro}'
+  `
+  let query = pool.query(queryPickup, async (err, resp) => {
+    if (err) {
+      res.json({ msj: 'error',error:err.stack})
+      return console.log(err.stack)
+    }
+    else {
+      res.json({msj:'ok'})
+      }    
+  })
+}
 module.exports = { controllerUser }

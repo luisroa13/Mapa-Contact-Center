@@ -32,23 +32,29 @@ route.get('/views/Mapas/cargarPickup',user.controllerUser.isAuthenticaded, (req,
     res.render('../views/Mapas/cargarPickup');
 });
 
+route.get('/views/Mapas/descargarPlacemark',user.controllerUser.isAuthenticaded, (req, res) => {
+    res.render('../views/Mapas/descargarPlacemark');
+});
 
 // metodos post
-route.post('/views/Mapas/registrar',user.controllerUser.userRegister,(req,re)=>{
+route.post('/views/Mapas/registrar',user.controllerUser.isAuthenticaded,user.controllerUser.userRegister,(req,re)=>{
     send.redirect('/views/Mapas/altaUsuarios')
 });
 
-route.post('/views/Mapas/subirPlacemark',user.controllerUser.cargarPlacemark,(req,re)=>{
+route.post('/views/Mapas/subirPlacemark',user.controllerUser.isAuthenticaded,user.controllerUser.cargarPlacemark,(req,re)=>{
     send.redirect('/views/Mapas/cargarPlacemark')
 });
 
-route.post('/views/Mapas/validarActualizarPlacemark',user.controllerUser.actualizarPlacemark,(req,re)=>{
+route.post('/views/Mapas/validarActualizarPlacemark',user.controllerUser.isAuthenticaded,user.controllerUser.actualizarPlacemark,(req,re)=>{
     send.redirect('/views/Mapas/actualizarPlacemark')
 });
-route.post('/views/Mapas/eliminarPlacemark',user.controllerUser.eliminarPlacemark,(req,re)=>{
+route.post('/views/Mapas/eliminarPlacemark',user.controllerUser.isAuthenticaded,user.controllerUser.eliminarPlacemark,(req,re)=>{
     send.redirect('/views/Mapas/eliminarPlacemark')
 });
 
+route.post('/views/Mapas/cargarPickup',user.controllerUser.isAuthenticaded,user.controllerUser.cargarPickup,(req,re)=>{
+    send.redirect('/views/Mapas/cargarPickup')
+});
 
 route.post('/views/login',user.controllerUser.authUser);
 module.exports = route;

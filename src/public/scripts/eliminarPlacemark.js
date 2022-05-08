@@ -6,6 +6,7 @@ let CC=[]
 window.onload=()=>{
     getCC(selectMarca.value)
 }
+
 selectMarca.addEventListener('change',()=>{
  getCC(selectMarca.value)
 })
