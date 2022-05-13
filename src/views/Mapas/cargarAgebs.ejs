@@ -25,6 +25,7 @@
           font-size: 3.5rem;
         }
       }
+      
     </style>
 
     
@@ -112,31 +113,30 @@
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Cargar Placemark</h1>
+        <h1 class="h2">Cargar Agebs</h1>
       </div>
-      <label for="campana" class="form-label">Selecciona la campaña</label>
-      <select class="form-select form-select-sm" id="campana" aria-label=".form-select-sm example">
-        <option value="1">Equity</option>
-        <option value="2">Fraquicias</option>
-      </select>
       <label for="Marca" class="form-label">Selecciona la marca</label>
+
       <select class="form-select form-select-sm" id="Marca" aria-label=".form-select-sm example">
-        <option value="1">kFC</option>
-        <option value="2">Pizza hut</option>
+        <option value="KFC">kFC</option>
+        <option value="PH">Pizza hut</option>
       </select>
-      <div class="mb-3">
-        <label for="formFile" class="form-label">Placemark</label>
-        <input class="form-control" type="file" id="formFile" accept=".kml">
-      </div>
-     
-      <button type="submit" class="btn btn-primary btn-lg" id="btnEnviar">Cargar</button>
+      <label for="CC" class="form-label">Selecciona el CC</label>
+
+      <select class="form-select form-select-sm" id="CC" aria-label=".form-select-sm example">
+
+      </select>
+
+        <label for="datosPickup" class="form-label">Carga el archivo</label>
+        <input class="form-control" type="file" id="fileAgebs" accept=".kml">
+      <button type="submit" class="btn btn-primary btn-lg" id="btnEnviar">Enviar</button>
     </main>
   </div>
 </div>
      <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script><script src="dashboard.js"></script>
        <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-      <script src="../../public/scripts/placemark.js"></script>
+       <script src="../../public/scripts/cargarAgebs.js"></script>
   
     </body>
 </html>

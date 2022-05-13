@@ -63,8 +63,6 @@ const descargarCoordenadas= async(cc)=>{
      getAgebs(data)
         })
      let placemarkJSON={...objTZ,...objAgebs}
-     console.log('ok')
-     console.log(placemarkJSON)
      descargarExcel(placemarkJSON,`${cc}_Placemark.xlsx`)
     }
 const getTZ=(data)=>{
@@ -93,7 +91,7 @@ const getAgebs=(data)=>{
         coordenadasAgeb[i]=coordenadasAgeb[i].replace("[[[", '[ [ ')
         coordenadasAgeb[i]=coordenadasAgeb[i].replace("]]]", ' ] ]')
         coordenadasAgeb[i]=coordenadasAgeb[i].replace(/\],\[/g, " ], [ ") 
-         arrayAgeb.push(array[i].properties.Ageb)
+        arrayAgeb.push(array[i].properties.Ageb)
     })
     objAgebs = arrayAgeb.reduce((acc, el,i) => ({
         ...acc,

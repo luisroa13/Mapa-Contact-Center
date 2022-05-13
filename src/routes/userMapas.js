@@ -5,7 +5,14 @@ const route = require('express').Router();
 
 // metodos get
 route.get('/views/Mapas/altaUsuarios',user.controllerUser.isAuthenticaded, (req, res) => {
-    res.render('../views/Mapas/altaUsuarios');
+    res.render('../views/Mapas/altaUsuarios',{
+        alert:false,
+        alertTitle:"Ok",
+        alertMessage:"Usuario",
+        alertIcon:"success",
+        showConfirmButton:true,
+        timer:false
+    });
 });
 route.get('/logout',user.controllerUser.logout);
 
@@ -35,6 +42,9 @@ route.get('/views/Mapas/cargarPickup',user.controllerUser.isAuthenticaded, (req,
 route.get('/views/Mapas/descargarPlacemark',user.controllerUser.isAuthenticaded, (req, res) => {
     res.render('../views/Mapas/descargarPlacemark');
 });
+route.get('/views/Mapas/cargarAgebs',user.controllerUser.isAuthenticaded, (req, res) => {
+    res.render('../views/Mapas/cargarAgebs');
+});
 
 // metodos post
 route.post('/views/Mapas/registrar',user.controllerUser.isAuthenticaded,user.controllerUser.userRegister,(req,re)=>{
@@ -55,6 +65,8 @@ route.post('/views/Mapas/eliminarPlacemark',user.controllerUser.isAuthenticaded,
 route.post('/views/Mapas/cargarPickup',user.controllerUser.isAuthenticaded,user.controllerUser.cargarPickup,(req,re)=>{
     send.redirect('/views/Mapas/cargarPickup')
 });
-
+route.post('/views/Mapas/cargarAgebs/',user.controllerUser.isAuthenticaded,user.controllerUser.cargarAgebs,(req,re)=>{
+    send.redirect('/views/Mapas/cargarAgebs')
+});
 route.post('/views/login',user.controllerUser.authUser);
 module.exports = route;

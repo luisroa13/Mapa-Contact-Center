@@ -24,6 +24,7 @@ cargarPlacemark.addEventListener('change', (e) => {
                  coordenadasTZ=coordenadasTZ.replace(/,/g, " ");     
                  coordenadasTZ=coordenadasTZ.replace(/ 0/g, " 0, ");
                  coordenadasTZ=coordenadasTZ.replace(/,.$/,"");
+
                 if(!item.getElementsByTagName('Point')[0])
                 { 
                     Swal.fire({
@@ -41,7 +42,7 @@ cargarPlacemark.addEventListener('change', (e) => {
                 coordenadasSite=coordenadasSite.replace(/,0/,'')
                 coordenadasSite=coordenadasSite.replace(/,/,' ')
 
-                console.log(coordenadasSite)    
+               
                 let tz ={
                 name:name,
                 marca:marca,
@@ -61,6 +62,7 @@ cargarPlacemark.addEventListener('change', (e) => {
 
 
 const enviarDataTZ=(tz)=>{
+    
     fetch('http://localhost:3000/views/Mapas/subirPlacemark',{
         method:'POST',
         body:JSON.stringify(tz),
