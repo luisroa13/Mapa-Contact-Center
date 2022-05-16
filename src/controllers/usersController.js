@@ -38,7 +38,7 @@ controllerUser.userRegister = async (req, res, next) => {
   res.render("../views/Mapas/altaUsuarios",{
     alert:true,
     alertTitle:"Ok",
-    alertMessage:"Usuario registrado de forma exitosa",
+    alertMessage:`Se ha creado el usuario ${user} de forma exitosa`,
     alertIcon:"success",
     showConfirmButton:true,
     timer:false

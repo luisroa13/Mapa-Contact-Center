@@ -489,7 +489,7 @@ function addSitePH(data) {
     else {
 
         const myIconPH = L.icon({
-            iconUrl: `../../public/imagenes/PH.png`,
+            iconUrl: `../../imagenes/PH.png`,
             iconSize: [30, 30]
         });
 
