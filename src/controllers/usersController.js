@@ -229,18 +229,46 @@ controllerUser.cargarAgebs = (req, res) => {
   let cc = req.body.cc;
   
   let query1=`select * from "Agebs" where "CC"=${cc}`
-  for (key in json) {
-    if (key !== "cc") {
-      console.log(json[key])
-      let query2 = `insert into "Agebs" values(${cc},'${key}', ST_GeometryFromText('POLYGON Z((${json[key]}))'))`;
-      let query = pool.query(query2, async (err, resp) => {
-       if (err) {
-          return console.log(err.stack);
+  let query = pool.query(query1, async (err, respuesta) => {
+    if (err) {
+       return console.log(err.stack);
+     }
+     if(respuesta.rows.length>0)
+     { 
+       let query3 = `delete from "Agebs" where "CC"=${cc}`;
+           let query = pool.query(query3, async (err, resp) => {
+            if (err) {
+               return console.log(err.stack);
+             }
+             else {
+               for (key in json) {
+                 if (key !== "cc") {
+                   let query2 = `insert into "Agebs" values(${cc},'${key}', ST_GeometryFromText('POLYGON Z((${json[key]}))'))`;
+                   let query = pool.query(query2, async (err, resp) => {
+                    if (err) {
+                       return console.log(err.stack);
+                     }
+                   });
+                 }
+               }
+ 
+             }
+           });
+       }
+    else if(respuesta.rows.length==0)
+    {
+      for (key in json) {
+        if (key !== "cc") {
+          let query2 = `insert into "Agebs" values(${cc},'${key}', ST_GeometryFromText('POLYGON Z((${json[key]}))'))`;
+          let query = pool.query(query2, async (err, resp) => {
+           if (err) {
+              return console.log(err.stack);
+            }
+          });
         }
-      });
-    }
-  }
-  console.log(mensaje)
+      }
+    }   });
+  
   res.json({ msj: 'ok'});
 };
 module.exports = { controllerUser };
