@@ -1,19 +1,23 @@
 
 const capas = require("../controllers/layerController");
+const usuarios=require("../controllers/usersController")
 const router = require('express').Router();
 
-router.get('/Estados', capas.controllerData.getEstados);
-router.get('/:calle/:esquina/:colonia/:estado', capas.controllerData.getAddress);
-router.get('/Municipios/:claveEstado', capas.controllerData.getMunicipios);
-router.get('/Colonias/:estado', capas.controllerData.getColonias);
-router.get('/Codigos/:estado', capas.controllerData.getCodigosPostales);
-router.get('/FiltrarMunicipio/:estado/:valor',capas.controllerData.getFiltroMunicipio);
-router.get('/FiltrarColonia/:estado/:valor',capas.controllerData.getFiltroColonia);
-router.get('/FiltrarCodigoPostal/:estado/:valor',capas.controllerData.getFiltroCodigoPostal);
-router.get('/tz/:marca',capas.controllerData.getTz);
-router.get('/sites/:marca',capas.controllerData.getSites);
-router.get('/placemark/:cc',capas.controllerData.getPlacemark)
-router.get('/Agebs/:cc',capas.controllerData.getAgebs)
+router.get('/Estados',usuarios.controllerUser.autToken ,capas.controllerData.getEstados);
+router.get('/:calle/:esquina/:colonia/:estado', usuarios.controllerUser.autToken ,capas.controllerData.getAddress);
+router.get('/Municipios/:claveEstado',usuarios.controllerUser.autToken , capas.controllerData.getMunicipios);
+router.get('/Colonias/:estado', usuarios.controllerUser.autToken ,capas.controllerData.getColonias);
+router.get('/Codigos/:estado', usuarios.controllerUser.autToken ,capas.controllerData.getCodigosPostales);
+router.get('/FiltrarMunicipio/:estado/:valor',usuarios.controllerUser.autToken ,capas.controllerData.getFiltroMunicipio);
+router.get('/FiltrarColonia/:estado/:valor',usuarios.controllerUser.autToken ,capas.controllerData.getFiltroColonia);
+router.get('/FiltrarCodigoPostal/:estado/:valor',usuarios.controllerUser.autToken ,capas.controllerData.getFiltroCodigoPostal);
+router.get('/tz/:marca' ,capas.controllerData.getTz);
+router.get('/sites/:marca' ,capas.controllerData.getSites);
+router.get('/placemark/:cc',usuarios.controllerUser.autToken ,capas.controllerData.getPlacemark)
+router.get('/Agebs/:cc',usuarios.controllerUser.autToken ,capas.controllerData.getAgebs)
+router.get('/usuarios/peticiones',usuarios.controllerUser.getPeticionesUsuario)
+router.get('/usuarios/solicitudes',usuarios.controllerUser.getSolicitudes)
+router.get('/filtrarsolicitudes/:usuario/:fecha',usuarios.controllerUser.filtarSolicitudes);
 
 //router.get('/Filtrar/:estado/Colonia/:valor');
 //router.get('/Filtrar/:estado/CodigoPostal/:valor');
@@ -48,6 +52,10 @@ router.get('/views/login', (req, res) => {
     });
 });
 
+router.get('/views/mapa',usuarios.controllerUser.isAuthenticaded,(req,res)=>{
+res.render('../views/mapa')
+
+})
 
 
 

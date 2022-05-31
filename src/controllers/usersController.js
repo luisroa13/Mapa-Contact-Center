@@ -271,4 +271,124 @@ controllerUser.cargarAgebs = (req, res) => {
   
   res.json({ msj: 'ok'});
 };
+
+controllerUser.authRol=async (req, res, next) => {
+  if (req.cookies.jwt) {
+    try {
+      const decodificado = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        jwtConfig.jwt_password
+      );
+
+      let queryJwt = `select * from usuarios where usuario='${decodificado.id}'`;
+      let query = pool.query(queryJwt, async (err, resp) => {
+        if (err) {
+          return console.error("Error ejecutando la consulta. ", err.stack);
+        }
+        req.user = resp.rows[0];
+        if(req.user.tipo_usuario!=='Mapas')
+        {
+          res.redirect("/views/Dashboard");
+
+        }  
+        else{
+        return next();
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      return next();
+    }
+  } else {
+    res.redirect("/views/login");
+    return next();
+  }
+};
+
+controllerUser.autToken=async (req, res, next) => {
+  if (req.cookies.jwt) {
+    try {
+      
+      const decodificado = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        jwtConfig.jwt_password
+      );
+      let ruta=req.route.path
+      date=new Date()
+      let hora=`${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`      
+      let queryJwt = `insert into "Peticiones"(usuario,ruta,fecha,hora) values('${decodificado.id}','${ruta}','${date.toDateString()}','${hora}')`;
+      let query = pool.query(queryJwt, async (err, resp) => {
+        if (err) {
+          return console.error("Error ejecutando la consulta. ", err.stack);
+        }
+        else{
+        return next();
+        }
+      })
+    } catch (error) {
+      console.log(error);
+      return next();
+    }
+  } else {
+    res.redirect("/views/login");
+    return next();
+  }
+};
+
+controllerUser.getPeticionesUsuario=(req, res)=>{
+let queryPeticiones=`select usuario,count(*) as "Solicitudes" from "Peticiones" group by usuario`
+let query = pool.query(queryPeticiones, async (err, resp) => {
+  if (err) {
+    return console.error("Error ejecutando la consulta. ", err.stack);
+  }
+  let Array=[]
+  for(let i=0;i<resp.rows.length;i++)
+  {
+  Array.push(resp.rows[i])
+  }
+  
+  res.json(Array)
+})
+} 
+
+
+
+
+controllerUser.getSolicitudes=(req, res)=>{
+  let queryPeticiones=`select * from "Peticiones"`
+  let query = pool.query(queryPeticiones, async (err, resp) => {
+    if (err) {
+      return console.error("Error ejecutando la consulta. ", err.stack);
+    }
+    let Array=[]
+    for(let i=0;i<resp.rows.length;i++)
+    {
+    Array.push(resp.rows[i])
+    }
+    
+    res.json(Array)
+  })
+  } 
+  controllerUser.filtarSolicitudes=(req, res)=>{
+    let usuario=req.params.usuario;
+    let fecha=req.params.fecha
+
+    let queryPeticiones=`select ruta, count(*) as "Solicitudes" from "Peticiones"
+    where usuario='${usuario}' and fecha between '${fecha}' and '${fecha}'
+    group by ruta`
+
+    let query = pool.query(queryPeticiones, async (err, resp) => {
+      if (err) {
+        return console.error("Error ejecutando la consulta. ", err.stack);
+      }
+      let Array=[]
+      for(let i=0;i<resp.rows.length;i++)
+      {
+      Array.push(resp.rows[i])
+      }
+      
+      res.json(Array)
+    })
+    }   
+    
 module.exports = { controllerUser };

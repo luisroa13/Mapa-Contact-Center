@@ -80,7 +80,6 @@ fileAgebs.addEventListener('change', (e) => {
                     coordenadasTZ[i]=coordenadasTZ[i].replace(/,.$/,"");
                     coordenadasTZ[i]=coordenadasTZ[i].replace(/"/g,"");
                     coordenadasf.push(coordenadasTZ[i])
-                    console.log(coordenadasf[i])
                 }
                 let agebs = name.reduce((acc, el,i) => ({
                     ...acc,
