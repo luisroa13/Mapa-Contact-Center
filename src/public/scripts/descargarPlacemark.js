@@ -104,7 +104,7 @@ descargarCoordenadas(selectCC.value)
 })
 
 const descargarExcel=(data,nombre)=>{
- let newJson=[data]
+let newJson=[data]
 
 let workSheet=XLSX.utils.json_to_sheet(newJson)
 let workBook=XLSX.utils.book_new()

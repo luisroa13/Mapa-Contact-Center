@@ -19,16 +19,17 @@ const pool = new Pool({
 
 const controllerUser = {};
 controllerUser.userRegister = async (req, res, next) => {
-  const nombre = req.body.nombre;
-  const apellidoP = req.body.apellidoP;
-  const apellidoM = req.body.apellidoM;
-  const tipo = req.body.tipo;
-  const pass = req.body.pass;
-  const user = generaeUser(nombre, apellidoP, apellidoM);
+  let nombre = req.body.nombre;
+  let apellidoP = req.body.apellidoP;
+  let apellidoM = req.body.apellidoM;
+  let tipo = req.body.tipo;
+  let pass = req.body.pass;
+  let coordinador=req.body.Coordinador
+  let user = generaeUser(nombre, apellidoP, apellidoM);
 
   let passHash = await bcryptjs.hash(pass, 8);
 
-  const queryUser = `insert into usuarios values ('${user}','${nombre}','${apellidoP}','${apellidoM}','${tipo}','${passHash}')`;
+  let queryUser = `insert into usuarios values ('${user}','${nombre}','${apellidoP}','${apellidoM}','${tipo}','${passHash}','${coordinador}')`;
 
   let query = pool.query(queryUser, async (err, resp) => {
     if (err) {
@@ -336,7 +337,11 @@ controllerUser.autToken=async (req, res, next) => {
 };
 
 controllerUser.getPeticionesUsuario=(req, res)=>{
-let queryPeticiones=`select usuario,count(*) as "Solicitudes" from "Peticiones" group by usuario`
+let supervisor=req.params.supervisor
+let queryPeticiones=`select p.usuario,count(p.*) as "Solicitudes" from "Peticiones" p
+inner join usuarios u on p.usuario=u.usuario
+where u.supervisor like '%${supervisor}%'
+group by p.usuario`
 let query = pool.query(queryPeticiones, async (err, resp) => {
   if (err) {
     return console.error("Error ejecutando la consulta. ", err.stack);
@@ -372,11 +377,18 @@ controllerUser.getSolicitudes=(req, res)=>{
   controllerUser.filtarSolicitudes=(req, res)=>{
     let usuario=req.params.usuario;
     let fecha=req.params.fecha
-
-    let queryPeticiones=`select ruta, count(*) as "Solicitudes" from "Peticiones"
+    let queryPeticiones=''
+    if(fecha=='Todas' || fecha=='todas')
+    {
+      queryPeticiones=`select ruta, count(*) as "Solicitudes", usuario,fecha from "Peticiones"
+      where usuario='${usuario}'
+      group by ruta, usuario, fecha`
+    }
+    else {
+    queryPeticiones=`select ruta, count(*) as "Solicitudes", usuario,fecha from "Peticiones"
     where usuario='${usuario}' and fecha between '${fecha}' and '${fecha}'
-    group by ruta`
-
+    group by ruta, usuario, fecha order by fecha DESC`
+     }
     let query = pool.query(queryPeticiones, async (err, resp) => {
       if (err) {
         return console.error("Error ejecutando la consulta. ", err.stack);

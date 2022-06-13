@@ -1,6 +1,8 @@
 
 const capas = require("../controllers/layerController");
 const usuarios=require("../controllers/usersController")
+const data=require("../controllers/dataController")
+
 const router = require('express').Router();
 
 router.get('/Estados',usuarios.controllerUser.autToken ,capas.controllerData.getEstados);
@@ -15,9 +17,12 @@ router.get('/tz/:marca' ,capas.controllerData.getTz);
 router.get('/sites/:marca' ,capas.controllerData.getSites);
 router.get('/placemark/:cc',usuarios.controllerUser.autToken ,capas.controllerData.getPlacemark)
 router.get('/Agebs/:cc',usuarios.controllerUser.autToken ,capas.controllerData.getAgebs)
-router.get('/usuarios/peticiones',usuarios.controllerUser.getPeticionesUsuario)
+router.get('/usuarios/peticiones/:supervisor',usuarios.controllerUser.getPeticionesUsuario)
 router.get('/usuarios/solicitudes',usuarios.controllerUser.getSolicitudes)
 router.get('/filtrarsolicitudes/:usuario/:fecha',usuarios.controllerUser.filtarSolicitudes);
+router.get('/usuarios/supervisores',data.dataController.getSupervisores);
+router.get('/datosUsuarios/:supervisor',data.dataController.getDataUsuarios);
+
 
 //router.get('/Filtrar/:estado/Colonia/:valor');
 //router.get('/Filtrar/:estado/CodigoPostal/:valor');

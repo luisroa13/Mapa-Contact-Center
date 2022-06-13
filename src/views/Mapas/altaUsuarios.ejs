@@ -106,6 +106,12 @@
               Cargar Agebs
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="bajaUsuario">
+              <span data-feather="layers"></span>
+              Eliminar Usuarios
+            </a>
+          </li>
         </ul>
       </div>
     </nav>
@@ -127,11 +133,17 @@
           <label for="txtApellidoMUsuario"  class="form-label">Apellido Materno</label>
           <input type="text" class="form-control" name="apellidoM" id="txtApellidoMUsuario" required>
         </div>
+        <label for="tipo" class="form-label">Tipo de usuario</label>
         <select class="form-select form-select-lg mb-3" name="tipo" aria-label=".form-select-lg example" required>
           <option value="Mapas">Mapas</option>
           <option value="Supervisor">Supervisor</option>
           <option value="Administrativo">Administrativo</option>
           <option value="Operdor">Operador</option>
+        </select>
+        <label for="Coordinador" class="form-label">Coordinador</label>
+        <select class="form-select form-select-lg mb-3" name="Coordinador" aria-label=".form-select-lg example" required>
+          <option value="Eduardo Ortiz Quiroz">Eduardo Ortiz Quiroz</option>
+          <option value="Angel Navarro Hernandez">Angel Navarro Hernandez</option>
         </select>
         <div class="mb-3">
           <label for="txtPassword" class="form-label">Password</label>

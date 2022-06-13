@@ -3,6 +3,11 @@ const btnTotales = document.getElementById("btnTotales");
 let selectUsuario = document.getElementById("selectUsuario");
 let selectFecha = document.getElementById("selectFecha");
 const btnFiltrar=document.getElementById('btnFiltrar');
+let selectSupervisor=document.getElementById('selectSupervisor')
+let btnFiltrarSupervisor=document.getElementById('btnFiltrarSupervisor')
+let btnReporte=document.getElementById('btnReporte')
+
+
 let usuarios = [];
 let solicitudes = [];
 let fechas = [];
@@ -10,11 +15,24 @@ let rutas=[];
 let nPeticiones=[]
 let usuario;
 let peticiones;
+let options=[];
+let optionsUsuario = [];
 
-const getData = async () => {
-  await fetch(`http://localhost:3000/usuarios/peticiones`)
+window.onload=()=>{
+
+  getSupervisor();
+  getDataSolicitudes();
+  getData();
+  usuario = usuarios;
+  peticiones = solicitudes;
+  generarGrafica(usuario, peticiones);
+}
+
+const getData = async (supervisor) => {
+  await fetch(`http://localhost:3000/usuarios/peticiones/${supervisor}`)
     .then((response) => response.json())
     .then((data) => {
+      console.log(data)
       //console.log(data.features[0].geometry.coordinates)
       getPeticiones(data);
       getUsers(data);
@@ -32,30 +50,33 @@ const getDataSolicitudes = async () => {
 };
 
 const agregarUsuarios = (usuario) => {
-  let options = [];
+
   let data = [];
+  
+  if(optionsUsuario.length>=0)
+  {
+    optionsUsuario.forEach((element,i)=>{
+      selectUsuario.removeChild(optionsUsuario[i])
+    })
+    optionsUsuario=[]
+  }
   data = usuario;
   if (usuario) {
     for (let i = 0; i < usuario.length; i++) {
-      options[i] = document.createElement("OPTION");
-      options[i].setAttribute("value", `${usuario[i]}`);
+      optionsUsuario[i] = document.createElement("OPTION");
+      optionsUsuario[i].setAttribute("value", `${usuario[i]}`);
       let t = document.createTextNode(`${usuario[i]}`);
-      options[i].appendChild(t);
-      selectUsuario.appendChild(options[i]);
+      optionsUsuario[i].appendChild(t);
+      selectUsuario.appendChild(optionsUsuario[i]);
     }
   }
 };
 
-  window.onload=()=>{
-  getDataSolicitudes();
-  getData();
-  usuario = usuarios;
-  peticiones = solicitudes;
-  console.log(usuario);
-  generarGrafica(usuario, peticiones);
-  }
-
 const getUsers = (data) => {
+  if(usuarios.length>0)
+  {
+    usuarios=[]
+  }
   data.forEach((element, i) => {
     usuarios.push(data[i].usuario);
   });
@@ -137,12 +158,13 @@ const generarGrafica = (usuario, peticiones) => {
 };
 
 const getFiltro=async(usuario,fecha)=>{
-  console.log(usuario, fecha)
   await fetch(`http://localhost:3000/filtrarsolicitudes/${usuario}/${fecha}`)
   .then((response) => response.json())
   .then((data) => {
-    console.log(data)
     filtrarGrafica(data);
+    btnReporte.addEventListener('click',()=>{
+    generarReporte(data);
+    })
   });
 }
 
@@ -166,8 +188,43 @@ generarGrafica(rutas,nPeticiones)
 }
 
 btnFiltrar.addEventListener('click',()=>{
-console.log(selectFecha.value)
-console.log(selectUsuario.value)
 getFiltro(selectUsuario.value,selectFecha.value)
-
 })
+
+const getSupervisor=async()=>{
+  await fetch(`http://localhost:3000/usuarios/supervisores`)
+  .then(response => response.json())
+  .then(data => {
+      addSupervisor(data)
+  })
+}
+
+const addSupervisor=(data)=>
+{
+data.forEach((element,i) => {
+    
+    options[i] = document.createElement("OPTION");
+    options[i].setAttribute("value", `${element.supervisor}`);
+    let t = document.createTextNode(`${element.supervisor}`);
+    options[i].appendChild(t);
+    selectSupervisor.appendChild(options[i])
+});
+}
+
+btnFiltrarSupervisor.addEventListener('click',()=>{
+  console.log(selectSupervisor.value)
+  getData(selectSupervisor.value)
+})
+
+const generarReporte=(data)=>{
+console.log(data)
+let arrayUsuarios=[];
+data.forEach((element,i)=>{
+arrayUsuarios.push(data[i])
+})
+let newJson=(arrayUsuarios)
+let workSheet=XLSX.utils.json_to_sheet(newJson)
+let workBook=XLSX.utils.book_new()
+XLSX.utils.book_append_sheet(workBook,workSheet,'Coordenadas')
+XLSX.writeFile(workBook,'reporte.xlsx')
+}

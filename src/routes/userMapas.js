@@ -1,5 +1,6 @@
 const { send } = require("express/lib/response");
 const user = require("../controllers/usersController");
+const datos=require("../controllers/dataController");
 const route = require('express').Router();
 
 
@@ -38,6 +39,10 @@ route.get('/views/Mapas/mapa',user.controllerUser.isAuthenticaded,user.controlle
     res.render('../views/Mapas/mapa');
 });
 
+
+route.get('/views/Mapas/bajaUsuario',user.controllerUser.isAuthenticaded,user.controllerUser.authRol, (req, res) => {
+    res.render('../views/Mapas/bajaUsuario');
+});
 route.get('/views/Mapas/cargarPlacemark',user.controllerUser.isAuthenticaded,user.controllerUser.authRol, (req, res) => {
     res.render('../views/Mapas/cargarPlacemark');
 });
@@ -86,7 +91,8 @@ route.post('/views/Mapas/cargarPickup',user.controllerUser.isAuthenticaded,user.
 route.post('/views/Mapas/cargarAgebs/',user.controllerUser.isAuthenticaded,user.controllerUser.cargarAgebs,(req,re)=>{
     send.redirect('/views/Mapas/cargarAgebs')
 });
-
-
+route.post('/eliminarUsuarios',user.controllerUser.isAuthenticaded,datos.dataController.eliminarUsuario,(req,re)=>{
+    send.redirect('/views/Mapas/bajaUsuario')
+});
 route.post('/views/login',user.controllerUser.authUser);
 module.exports = route;

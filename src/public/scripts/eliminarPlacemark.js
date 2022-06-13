@@ -25,7 +25,6 @@ if(options.length>0)
 {
 options.forEach((element,i)=>{
     selectCC.removeChild(options[i])
-
 })
 options=[]
 CC=[]
